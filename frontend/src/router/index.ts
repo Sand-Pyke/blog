@@ -58,10 +58,15 @@ router.beforeEach(async (to, from) => {
   
   // Initialize auth state from localStorage
   if (!authStore.user && localStorage.getItem('token')) {
-    await authStore.initAuth()
+    try {
+      await authStore.initAuth()
+    } catch {
+      // initAuth 失败时不清除已有的 token，允许继续
+      // 因为可能是网络临时故障
+    }
   }
 
-  const isAuthenticated = authStore.isAuthenticated
+  const isAuthenticated = !!authStore.token  // 只要有 token 就认为已登录，不依赖 /auth/me
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   const isGuestOnly = to.matched.some(record => record.meta.guest)
 
