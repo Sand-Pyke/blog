@@ -2,11 +2,11 @@ import { query } from '../config/db';
 import { BlogPost, BlogCategory, BlogTag, BlogPostWithRelations } from '../types';
 
 export const createBlogPost = async (post: Omit<BlogPost, 'id' | 'views' | 'created_at' | 'updated_at'>): Promise<BlogPost> => {
-  // 处理 slug 重复的情况
+  // 处理 slug 重复的情�?
   let slug = post.slug;
   let counter = 1;
   
-  // 检查 slug 是否已存在，如果存在则添加后缀
+  // 检�?slug 是否已存在，如果存在则添加后缀
   while (true) {
     const existingPost = await getBlogPostBySlug(slug);
     if (!existingPost) {

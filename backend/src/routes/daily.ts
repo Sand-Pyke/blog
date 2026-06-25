@@ -30,8 +30,7 @@ router.get('/', async (req, res) => {
 
     res.json(entries);
   } catch (error) {
-    console.error('Get daily entries error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -40,8 +39,7 @@ router.get('/count', async (req, res) => {
     const count = await countDailyEntries();
     res.json({ count });
   } catch (error) {
-    console.error('Count daily entries error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -56,8 +54,7 @@ router.get('/:id', async (req, res) => {
 
     res.json(entry);
   } catch (error) {
-    console.error('Get daily entry error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -78,8 +75,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
     res.status(201).json(entry);
   } catch (error) {
-    console.error('Create daily entry error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -100,8 +96,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
 
     res.json(entry);
   } catch (error) {
-    console.error('Update daily entry error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -116,8 +111,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 
     res.json({ message: 'Entry deleted successfully' });
   } catch (error) {
-    console.error('Delete daily entry error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
   }
 });
 

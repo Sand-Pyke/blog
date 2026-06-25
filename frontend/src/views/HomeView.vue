@@ -63,8 +63,7 @@
             <div v-if="databaseSkills.length > 0">
               <h3 class="font-label-xs text-primary font-bold uppercase tracking-wider mb-3 flex items-center gap-2">
                 <span class="material-symbols-outlined text-sm">storage</span>
-                数据库
-              </h3>
+                数据�?              </h3>
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div v-for="skill in databaseSkills" :key="skill.id" @click="showSkillDetail(skill)"
                   class="cursor-pointer">
@@ -111,8 +110,7 @@
             <h2 class="font-headline-md text-headline-md text-on-surface">近期发布</h2>
             <router-link to="/blog"
               class="text-primary font-label-xs uppercase hover:underline decoration-2 underline-offset-4">
-              全部文章 →
-            </router-link>
+              全部文章 �?            </router-link>
           </div>
 
           <div v-if="postsLoading" class="space-y-stack-lg">
@@ -163,7 +161,7 @@
                   {{ selectedSkill.category }}
                 </span>
                 <span class="text-on-surface-variant text-sm">
-                  熟练度: {{ selectedSkill.level * 10 }}%
+                  熟练�? {{ selectedSkill.level * 10 }}%
                 </span>
               </div>
 
@@ -211,7 +209,7 @@ const currentUser: User = {
   username: 'developer',
   email: 'developer@example.com',
   avatar: avatarImage,
-  bio: '热爱技术，专注前端开发',
+  bio: '热爱技术，专注前端开�?,
   createdAt: '2024-01-01',
   updatedAt: '2024-01-01',
   socialLinks: {
@@ -229,8 +227,7 @@ const postsError = ref('');
 const showSkillDialog = ref(false);
 const selectedSkill = ref<Skill | null>(null);
 
-// 按分类分组技能
-const frontendSkills = computed(() => skills.value.filter(s => s.category === 'Frontend'));
+// 按分类分组技�?const frontendSkills = computed(() => skills.value.filter(s => s.category === 'Frontend'));
 const backendSkills = computed(() => skills.value.filter(s => s.category === 'Backend'));
 const databaseSkills = computed(() => skills.value.filter(s => s.category === 'Database'));
 const devopsSkills = computed(() => skills.value.filter(s => s.category === 'DevOps'));
@@ -256,8 +253,7 @@ const fetchSkills = async () => {
   try {
     skillsLoading.value = true;
     const response = await api.getSkills();
-    console.log('Response:', response);
-    // 后端返回的是数组，不是 { skills: [] } 对象
+        // 后端返回的是数组，不�?{ skills: [] } 对象
     const skillsData = Array.isArray(response) ? response : response.skills || [];
     skills.value = skillsData.map((skill: any) => ({
       id: skill.id?.toString() || '',
@@ -269,8 +265,7 @@ const fetchSkills = async () => {
     }));
   } catch (error: any) {
     skillsError.value = error.message;
-    console.error('Failed to fetch skills:', error);
-  } finally {
+      } finally {
     skillsLoading.value = false;
   }
 };
@@ -279,7 +274,7 @@ const fetchRecentPosts = async () => {
   try {
     postsLoading.value = true;
     const response = await api.getBlogs({ page: 1, limit: 3, status: 'published' });
-    // 后端返回的是数组，不是 { blogs: [] } 对象
+    // 后端返回的是数组，不�?{ blogs: [] } 对象
     const blogs = Array.isArray(response) ? response : response.blogs || [];
     recentPosts.value = blogs.map((blog: any) => ({
       id: blog.id?.toString() || '',
@@ -304,8 +299,7 @@ const fetchRecentPosts = async () => {
     }));
   } catch (error: any) {
     postsError.value = error.message;
-    console.error('Failed to fetch posts:', error);
-  } finally {
+      } finally {
     postsLoading.value = false;
   }
 };

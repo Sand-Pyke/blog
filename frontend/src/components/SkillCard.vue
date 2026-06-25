@@ -29,7 +29,7 @@ const props = defineProps<{
 // SVG 图标路径
 const iconUrl = computed(() => {
   if (!props.skill.icon) return '';
-  // 如果是 .svg 文件，构建正确的路径
+  // 如果�?.svg 文件，构建正确的路径
   if (props.skill.icon.endsWith('.svg')) {
     return new URL(`../assets/svg/${props.skill.icon}`, import.meta.url).href;
   }

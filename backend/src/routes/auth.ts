@@ -41,8 +41,7 @@ router.post('/login', async (req, res) => {
       token,
     });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -61,8 +60,7 @@ router.get('/me', authenticateToken, async (req, res) => {
       bio: user.bio,
     });
   } catch (error) {
-    console.error('Get user error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -89,8 +87,7 @@ router.put('/me', authenticateToken, async (req, res) => {
       bio: user.bio,
     });
   } catch (error) {
-    console.error('Update user error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
   }
 });
 

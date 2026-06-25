@@ -38,7 +38,6 @@ router.get('/posts', async (req, res) => {
 
     res.json(posts);
   } catch (error) {
-    console.error('Get posts error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -49,7 +48,6 @@ router.get('/posts/recent', async (req, res) => {
     const posts = await getRecentPosts(limit);
     res.json(posts);
   } catch (error) {
-    console.error('Get recent posts error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -66,7 +64,6 @@ router.get('/posts/:slug', async (req, res) => {
     await incrementViews(post.id);
     res.json(post);
   } catch (error) {
-    console.error('Get post error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -74,7 +71,6 @@ router.get('/posts/:slug', async (req, res) => {
 router.post('/posts', authenticateToken, async (req, res) => {
   try {
     const { title, slug, content, excerpt, category_id, status, published_at, tags } = req.body;
-    console.log('Create post request:', { title, slug, category_id, status, tags });
 
     if (!title || !slug || !content || !category_id) {
       return res.status(400).json({ error: 'Title, slug, content, and category are required' });
@@ -90,7 +86,6 @@ router.post('/posts', authenticateToken, async (req, res) => {
       status: status || 'draft',
       published_at: status === 'published' ? (published_at || new Date()) : null,
     });
-    console.log('Post created:', post.id);
 
     if (tags && tags.length > 0) {
       await addPostTags(post.id, tags);
@@ -98,7 +93,6 @@ router.post('/posts', authenticateToken, async (req, res) => {
 
     res.status(201).json(post);
   } catch (error) {
-    console.error('Create post error:', error);
     res.status(500).json({ error: 'Internal server error', details: (error as Error).message });
   }
 });
@@ -132,8 +126,7 @@ router.put('/posts/:id', authenticateToken, async (req, res) => {
 
     res.json(post);
   } catch (error) {
-    console.error('Update post error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -148,8 +141,7 @@ router.delete('/posts/:id', authenticateToken, async (req, res) => {
 
     res.json({ message: 'Post deleted successfully' });
   } catch (error) {
-    console.error('Delete post error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -165,8 +157,7 @@ router.get('/categories', async (req, res) => {
 
     res.json(categoriesWithCount);
   } catch (error) {
-    console.error('Get categories error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -181,8 +172,7 @@ router.get('/categories/:slug', async (req, res) => {
 
     res.json(category);
   } catch (error) {
-    console.error('Get category error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -197,8 +187,7 @@ router.post('/categories', authenticateToken, async (req, res) => {
     const category = await createCategory({ name, slug, description });
     res.status(201).json(category);
   } catch (error) {
-    console.error('Create category error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -207,8 +196,7 @@ router.get('/tags', async (req, res) => {
     const tags = await getAllTags();
     res.json(tags);
   } catch (error) {
-    console.error('Get tags error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -223,8 +211,7 @@ router.get('/tags/:slug', async (req, res) => {
 
     res.json(tag);
   } catch (error) {
-    console.error('Get tag error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -239,8 +226,7 @@ router.post('/tags', authenticateToken, async (req, res) => {
     const tag = await createTag({ name, slug });
     res.status(201).json(tag);
   } catch (error) {
-    console.error('Create tag error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
   }
 });
 

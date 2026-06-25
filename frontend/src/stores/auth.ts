@@ -58,8 +58,7 @@ export const useAuthStore = defineStore('auth', () => {
       }
       return false
     } catch (error: any) {
-      console.error('Login error:', error)
-      throw error
+            throw error
     } finally {
       isLoading.value = false
     }
@@ -75,7 +74,7 @@ export const useAuthStore = defineStore('auth', () => {
       })
 
       if (!response.ok) {
-        // 接口不可用时不强退，保留 token
+        // 接口不可用时不强退，保�?token
         if (response.status === 401 || response.status === 403) {
           logout()
         }
@@ -91,9 +90,8 @@ export const useAuthStore = defineStore('auth', () => {
       }
       return true
     } catch (error) {
-      // 网络错误不强退，保留 token 和 user
-      console.error('Fetch user info error:', error)
-      return false
+      // 网络错误不强退，保�?token �?user
+            return false
     }
   }
 
@@ -108,9 +106,8 @@ export const useAuthStore = defineStore('auth', () => {
         // 尝试验证 token 是否有效（失败不清理状态）
         await fetchUserInfo()
       } catch (error) {
-        // 解析失败只清除 user，保留 token
-        console.error('Failed to parse stored user:', error)
-        localStorage.removeItem('user')
+        // 解析失败只清�?user，保�?token
+                localStorage.removeItem('user')
         user.value = null
       }
     }

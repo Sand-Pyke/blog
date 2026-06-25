@@ -163,8 +163,7 @@ const currentPage = ref(1);
 const categoriesLoading = ref(true);
 const switchingCategory = ref(false);
 
-// 分类列表从后端获取
-const categories = ref<{ id: string; name: string; slug: string; color: string }[]>([]);
+// 分类列表从后端获�?const categories = ref<{ id: string; name: string; slug: string; color: string }[]>([]);
 
 // 获取分类列表
 const fetchCategories = async () => {
@@ -185,8 +184,7 @@ const fetchCategories = async () => {
       }))
     ];
   } catch (err) {
-    console.error('Failed to fetch categories:', err);
-    // 失败时使用默认选项
+        // 失败时使用默认选项
     categories.value = [
       { id: 'all', name: '全部', slug: 'all', color: '#004ac6' }
     ];
@@ -195,12 +193,11 @@ const fetchCategories = async () => {
   }
 };
 
-// 从 HTML 内容中提取第一张图片的 URL
+// �?HTML 内容中提取第一张图片的 URL
 const extractFirstImage = (content: string): string => {
   if (!content) return '';
   
-  // 匹配 <img> 标签的 src 属性
-  const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/i;
+  // 匹配 <img> 标签�?src 属�?  const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/i;
   const match = content.match(imgRegex);
   
   if (match && match[1]) {
@@ -266,8 +263,7 @@ const fetchBlogs = async (isCategorySwitch = false) => {
     totalPages.value = 1; // 后端暂时没有分页信息
   } catch (err: any) {
     error.value = err.message || '加载失败';
-    console.error('Failed to fetch blogs:', err);
-  } finally {
+      } finally {
     loading.value = false;
     switchingCategory.value = false;
   }
@@ -310,8 +306,8 @@ const displayedPages = computed(() => {
 const getCategoryClass = (categoryName: string) => {
   const colorMap: Record<string, string> = {
     'Frontend': 'text-secondary-fixed-dim bg-secondary-container/50',
-    '前端技术': 'text-secondary-fixed-dim bg-secondary-container/50',
-    '技术分享': 'text-secondary-fixed-dim bg-secondary-container/50',
+    '前端技�?: 'text-secondary-fixed-dim bg-secondary-container/50',
+    '技术分�?: 'text-secondary-fixed-dim bg-secondary-container/50',
     'Performance': 'text-tertiary-container bg-tertiary-fixed/30',
     'Daily': 'text-secondary-fixed-dim bg-secondary-container/50',
     '日常分享': 'text-secondary-fixed-dim bg-secondary-container/50',

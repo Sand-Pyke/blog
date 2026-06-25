@@ -26,7 +26,7 @@
         <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-8 md:p-10 shadow-sm transition-all duration-500 hover:shadow-md">
           <div class="mb-stack-lg">
             <h2 class="font-headline-md text-headline-md text-on-surface">欢迎回来</h2>
-            <p class="font-body-md text-on-surface-variant text-sm mt-1">请登录您的开发者账号</p>
+            <p class="font-body-md text-on-surface-variant text-sm mt-1">请登录您的开发者账�?/p>
           </div>
 
           <!-- Error Message -->
@@ -58,7 +58,7 @@
             <div class="space-y-2">
               <div class="flex justify-between items-center">
                 <label class="font-label-xs text-label-xs text-on-surface-variant block" for="password">密码</label>
-                <a class="font-label-xs text-label-xs text-primary hover:underline underline-offset-4" href="#">忘记密码？</a>
+                <a class="font-label-xs text-label-xs text-primary hover:underline underline-offset-4" href="#">忘记密码�?/a>
               </div>
               <div class="relative">
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">lock</span>
@@ -81,7 +81,7 @@
             <!-- Remember Me -->
             <div class="flex items-center gap-2">
               <input v-model="loginForm.remember" class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary/20 bg-surface" id="remember" name="remember" type="checkbox"/>
-              <label class="font-body-md text-sm text-on-surface-variant select-none" for="remember">保持登录状态</label>
+              <label class="font-body-md text-sm text-on-surface-variant select-none" for="remember">保持登录状�?/label>
             </div>
 
             <!-- Submit Button -->
@@ -91,7 +91,7 @@
               type="submit"
             >
               <span v-if="isLoading" class="flex items-center gap-2">
-                登录中...
+                登录�?..
                 <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -156,16 +156,16 @@ const loginForm = reactive({
 const validateField = (field: 'identity' | 'password') => {
   if (field === 'identity') {
     if (!loginForm.identity.trim()) {
-      errors.identity = '请输入邮箱或用户名'
+      errors.identity = '请输入邮箱或用户�?
     } else {
       errors.identity = ''
     }
   }
   if (field === 'password') {
     if (!loginForm.password) {
-      errors.password = '请输入密码'
+      errors.password = '请输入密�?
     } else if (loginForm.password.length < 6) {
-      errors.password = '密码至少6位'
+      errors.password = '密码至少6�?
     } else {
       errors.password = ''
     }
