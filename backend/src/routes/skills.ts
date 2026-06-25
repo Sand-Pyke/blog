@@ -1,5 +1,5 @@
 import express from 'express';
-import { authenticateToken } from '../middleware/auth';
+import { authenticateToken } from '../middleware/auth.js';
 import {
   createSkill,
   getSkillById,
@@ -8,7 +8,7 @@ import {
   updateSkill,
   deleteSkill,
   getAllCategories,
-} from '../models/Skill';
+} from '../models/Skill.js';
 
 const router = express.Router();
 

@@ -1,5 +1,5 @@
 import express from 'express';
-import { authenticateToken } from '../middleware/auth';
+import { authenticateToken } from '../middleware/auth.js';
 import {
   createDailyEntry,
   getDailyEntryWithAuthor,
@@ -9,7 +9,7 @@ import {
   updateDailyEntry,
   deleteDailyEntry,
   countDailyEntries,
-} from '../models/Daily';
+} from '../models/Daily.js';
 
 const router = express.Router();
 
