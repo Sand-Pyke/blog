@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: 293617
       POSTGRES_DB: blog_db
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - ./pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
@@ -44,6 +44,4 @@ services:
     ports:
       - "80:80"
 
-# 声明命名卷（持久化数据库数据）
-volumes:
-  pg_data:
+# 不再需要声明命名卷，数据库数据直接存到宿主机的 ./pgdata 目录

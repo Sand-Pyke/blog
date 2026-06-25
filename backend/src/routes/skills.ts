@@ -59,6 +59,7 @@ router.get('/:id', async (req, res) => {
 router.post('/', authenticateToken, async (req, res) => {
   try {
     const { name, category, level, description, icon } = req.body;
+    console.log('Create skill request:', { name, category, level, description, icon, userId: req.user?.userId });
 
     if (!name || !category || level === undefined) {
       return res.status(400).json({ error: 'Name, category, and level are required' });
@@ -66,9 +67,9 @@ router.post('/', authenticateToken, async (req, res) => {
 
     const skill = await createSkill({ name, category, level, description: description || null, icon: icon || null });
     res.status(201).json(skill);
-  } catch (error) {
-    console.error('Create skill error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+  } catch (error: any) {
+    console.error('Create skill error:', error.message, error.stack);
+    res.status(500).json({ error: error.message || 'Internal server error' });
   }
 });
 

@@ -2,6 +2,7 @@ import { query } from '../config/db';
 import { Skill } from '../types';
 
 export const createSkill = async (skill: Omit<Skill, 'id' | 'created_at'>): Promise<Skill> => {
+  console.log('Insert skill:', { name: skill.name, category: skill.category, level: skill.level });
   const result = await query(
     'INSERT INTO skills (name, category, level, description, icon) VALUES ($1, $2, $3, $4, $5) RETURNING *',
     [skill.name, skill.category, skill.level, skill.description || null, skill.icon || null]
