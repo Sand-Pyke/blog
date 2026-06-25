@@ -10,6 +10,8 @@ RUN npx vite build        # 执行构建命令，生成 dist 文件夹
 FROM nginx:stable-alpine
 # 将构建好的 dist 文件夹内容，复制到 Nginx 的默认网站目录
 COPY --from=builder /app/dist /usr/share/nginx/html
+# 使用自定义 Nginx 配置（支持 SPA 路由回退、API 代理）
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 # 暴露 Nginx 默认的 80 端口
 EXPOSE 80
 # Nginx 会在启动时自动运行
