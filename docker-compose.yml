@@ -1,49 +1,48 @@
-version: '3.8'
-
 services:
-  # 1. 数据库服务 (db)
   db:
-    image: postgres:14-alpine  # 直接使用官方镜像[reference:10]
+    image: postgres:14-alpine
     container_name: my-blog-db
     restart: always
     environment:
-      POSTGRES_USER: postgres     # 请替换为你的数据库用户
-      POSTGRES_PASSWORD: 293617 # 请替换为你的数据库密码
-      POSTGRES_DB: blog_db       # 请替换为你的数据库名
+      POSTGRES_USER: your_db_user      # 替换为实际值
+      POSTGRES_PASSWORD: your_db_pass
+      POSTGRES_DB: your_db_name
     volumes:
-      - pg_data:/var/lib/postgresql/data  # 持久化存储数据[reference:11]
+      - pg_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"                  # 映射端口，便于本地调试
-    healthcheck:                     # 健康检查，确保数据库就绪
+      - "5432:5432"
+    healthcheck:
       test: ["CMD-SHELL", "pg_isready -U your_db_user"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # 2. 后端服务 (backend)
   backend:
-    build: ./backend                 # 告诉 Compose 使用 ./backend/Dockerfile 构建[reference:12]
+    build: ./backend
     container_name: my-blog-backend
     restart: always
     depends_on:
       db:
-        condition: service_healthy   # 等待数据库健康后再启动[reference:13]
+        condition: service_healthy
     environment:
       NODE_ENV: production
-      DB_HOST: db                    # 重要！数据库地址填服务名 "db"
-      DB_USER: postgres
-      DB_PASSWORD: 293617
-      DB_NAME: blog_db
+      DB_HOST: db
+      DB_USER: your_db_user
+      DB_PASSWORD: your_db_pass
+      DB_NAME: your_db_name
       DB_PORT: 5432
     ports:
-      - "3000:3000"                  # 将宿主机的3000端口映射到容器的3000端口[reference:14]
+      - "3000:3000"
 
-  # 3. 前端服务 (frontend)
   frontend:
-    build: ./frontend                # 告诉 Compose 使用 ./frontend/Dockerfile 构建
+    build: ./frontend
     container_name: my-blog-frontend
     restart: always
     depends_on:
       - backend
     ports:
-      - "80:80"                      # 将宿主机的80端口映射到容器的80端口
+      - "80:80"
+
+# 声明命名卷（持久化数据库数据）
+volumes:
+  pg_data:
