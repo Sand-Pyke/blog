@@ -2,11 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
-import authRoutes from './routes/auth.js';
-import blogRoutes from './routes/blog.js';
-import dailyRoutes from './routes/daily.js';
-import skillRoutes from './routes/skills.js';
-import uploadRoutes from './routes/upload.js';
+import authRoutes from './routes/auth';
+import blogRoutes from './routes/blog';
+import dailyRoutes from './routes/daily';
+import skillRoutes from './routes/skills';
+import uploadRoutes from './routes/upload';
 
 dotenv.config();
 
