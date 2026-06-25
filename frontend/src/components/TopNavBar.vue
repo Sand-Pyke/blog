@@ -6,7 +6,7 @@
     />
     
     <div class="flex justify-between items-center px-gutter max-w-container-max mx-auto h-16">
-      <router-link to="/" class="font-pacifico text-2xl font-bold text-primary shrink-0">
+      <router-link to="/" class="font-pacifico text-2xl font-bold text-primary shrink-0 hidden md:block">
         王孝虎的博客
       </router-link>
       
@@ -17,6 +17,19 @@
           :key="item.path"
           :to="item.path"
           class="font-body-md transition-colors border-b-2 pb-1"
+          :class="isActive(item.path) ? 'text-primary border-primary font-semibold' : 'text-on-surface-variant border-transparent hover:text-primary hover:border-primary/30'"
+        >
+          {{ item.label }}
+        </router-link>
+      </nav>
+      
+      <!-- Mobile Nav - Horizontal Scroll -->
+      <nav class="md:hidden flex items-center gap-2 overflow-x-auto scrollbar-hide min-w-0 max-w-[calc(100%-140px)]">
+        <router-link 
+          v-for="item in visibleNavItems" 
+          :key="item.path"
+          :to="item.path"
+          class="font-body-md transition-colors border-b-2 pb-1 px-2 shrink-0 whitespace-nowrap"
           :class="isActive(item.path) ? 'text-primary border-primary font-semibold' : 'text-on-surface-variant border-transparent hover:text-primary hover:border-primary/30'"
         >
           {{ item.label }}
