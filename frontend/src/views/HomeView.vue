@@ -361,7 +361,6 @@ const fetchSkills = async () => {
   try {
     skillsLoading.value = true;
     const response = await api.getSkills();
-    // 后端返回的是数组，不�?{ skills: [] } 对象
     const skillsData = Array.isArray(response)
       ? response
       : response.skills || [];
@@ -388,7 +387,6 @@ const fetchRecentPosts = async () => {
       limit: 3,
       status: "published",
     });
-    // 后端返回的是数组，不�?{ blogs: [] } 对象
     const blogs = Array.isArray(response) ? response : response.blogs || [];
     recentPosts.value = blogs.map((blog: any) => ({
       id: blog.id?.toString() || "",
