@@ -251,7 +251,7 @@ const svgIcons = [
   { name: 'Docker', file: 'Docker.svg' },
   { name: 'Git', file: 'GIt.svg' },
   { name: 'Tailwind CSS', file: 'tailwindcss.svg' },
-  { name: 'Mobile', file: 'mobile.svg' },
+  { name: 'Mobile', file: 'Mobile.svg' },
   { name: 'Develop', file: 'Develop.svg' },
   { name: 'AI', file: 'AI.svg' },
   { name: 'webpack', file: 'webpack.svg' },
