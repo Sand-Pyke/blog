@@ -1,0 +1,103 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{vue,js,ts,jsx,tsx}",
+  ],
+  darkMode: 'class',
+  corePlugins: {
+    preflight: false,
+  },
+  theme: {
+    extend: {
+      colors: {
+        // Light mode colors
+        'primary': 'var(--color-primary)',
+        'primary-container': 'var(--color-primary-container)',
+        'on-primary': 'var(--color-on-primary)',
+        'on-primary-container': 'var(--color-on-primary-container)',
+        'secondary': 'var(--color-secondary)',
+        'secondary-container': 'var(--color-secondary-container)',
+        'on-secondary': 'var(--color-on-secondary)',
+        'on-secondary-container': 'var(--color-on-secondary-container)',
+        'tertiary': 'var(--color-tertiary)',
+        'tertiary-container': 'var(--color-tertiary-container)',
+        'on-tertiary': 'var(--color-on-tertiary)',
+        'on-tertiary-container': 'var(--color-on-tertiary-container)',
+        'error': 'var(--color-error)',
+        'error-container': 'var(--color-error-container)',
+        'on-error': 'var(--color-on-error)',
+        'on-error-container': 'var(--color-on-error-container)',
+        'background': 'var(--color-background)',
+        'on-background': 'var(--color-on-background)',
+        'surface': 'var(--color-surface)',
+        'surface-bright': 'var(--color-surface-bright)',
+        'surface-container': 'var(--color-surface-container)',
+        'surface-container-low': 'var(--color-surface-container-low)',
+        'surface-container-lowest': 'var(--color-surface-container-lowest)',
+        'surface-container-high': 'var(--color-surface-container-high)',
+        'surface-container-highest': 'var(--color-surface-container-highest)',
+        'surface-dim': 'var(--color-surface-dim)',
+        'surface-variant': 'var(--color-surface-variant)',
+        'on-surface': 'var(--color-on-surface)',
+        'on-surface-variant': 'var(--color-on-surface-variant)',
+        'outline': 'var(--color-outline)',
+        'outline-variant': 'var(--color-outline-variant)',
+        'inverse-surface': 'var(--color-inverse-surface)',
+        'inverse-on-surface': 'var(--color-inverse-on-surface)',
+        'inverse-primary': 'var(--color-inverse-primary)',
+        'surface-tint': 'var(--color-surface-tint)',
+        'primary-fixed': 'var(--color-primary-fixed)',
+        'primary-fixed-dim': 'var(--color-primary-fixed-dim)',
+        'on-primary-fixed': 'var(--color-on-primary-fixed)',
+        'on-primary-fixed-variant': 'var(--color-on-primary-fixed-variant)',
+        'secondary-fixed': 'var(--color-secondary-fixed)',
+        'secondary-fixed-dim': 'var(--color-secondary-fixed-dim)',
+        'tertiary-fixed': 'var(--color-tertiary-fixed)',
+        'tertiary-fixed-dim': 'var(--color-tertiary-fixed-dim)',
+      },
+      borderRadius: {
+        'DEFAULT': '0.125rem',
+        'lg': '0.25rem',
+        'xl': '0.5rem',
+        'full': '0.75rem'
+      },
+      spacing: {
+        'stack-md': '1rem',
+        'stack-lg': '2rem',
+        'gutter': '24px',
+        'stack-sm': '0.5rem',
+        'container-max': '800px',
+        'margin-mobile': '16px',
+        'stack-xl': '4rem'
+      },
+      fontFamily: {
+        'display-lg': ['Hanken Grotesk'],
+        'display-lg-mobile': ['Hanken Grotesk'],
+        'headline-md': ['Hanken Grotesk'],
+        'body-md': ['Inter'],
+        'body-lg': ['Inter'],
+        'label-xs': ['Geist'],
+        'code-sm': ['Geist'],
+        // 艺术字体
+        'playfair': ['Playfair Display', 'serif'],
+        'pacifico': ['Pacifico', 'cursive'],
+        'vibes': ['Great Vibes', 'cursive'],
+        'dancing': ['Dancing Script', 'cursive'],
+        'lobster': ['Lobster', 'cursive'],
+        'righteous': ['Righteous', 'cursive'],
+        'caveat': ['Caveat', 'cursive']
+      },
+      fontSize: {
+        'display-lg': ['48px', { 'lineHeight': '1.2', 'letterSpacing': '-0.02em', 'fontWeight': '700' }],
+        'display-lg-mobile': ['32px', { 'lineHeight': '1.25', 'fontWeight': '700' }],
+        'headline-md': ['24px', { 'lineHeight': '1.4', 'fontWeight': '600' }],
+        'body-md': ['16px', { 'lineHeight': '1.6', 'fontWeight': '400' }],
+        'body-lg': ['18px', { 'lineHeight': '1.75', 'fontWeight': '400' }],
+        'label-xs': ['12px', { 'lineHeight': '1.2', 'letterSpacing': '0.05em', 'fontWeight': '500' }],
+        'code-sm': ['14px', { 'lineHeight': '1.5', 'fontWeight': '400' }]
+      }
+    },
+  },
+  plugins: [],
+}

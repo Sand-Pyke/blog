@@ -1,0 +1,81 @@
+@import './base.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  background-color: var(--color-background) !important;
+  color: var(--color-on-background);
+}
+
+/* Debug: Check if bg-background class is compiled */
+.bg-background {
+  background-color: var(--color-background) !important;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background-color: var(--color-primary);
+  z-index: 100;
+  transition: width 0.1s ease;
+}
+
+.daily-timeline::before {
+  content: '';
+  position: absolute;
+  left: 1.5rem;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-outline-variant);
+  opacity: 0.5;
+}
+
+/* Dialog transition */
+.dialog-enter-active,
+.dialog-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.dialog-enter-active .dialog-content,
+.dialog-leave-active .dialog-content {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.dialog-enter-from,
+.dialog-leave-to {
+  opacity: 0;
+}
+
+.dialog-enter-from .dialog-content,
+.dialog-leave-to .dialog-content {
+  transform: scale(0.95);
+  opacity: 0;
+}
+
+@media (min-width: 768px) {
+  .daily-timeline::before {
+    left: 50%;
+  }
+}
+
+.editor-content:empty:before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+  cursor: text;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
