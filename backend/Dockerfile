@@ -1,20 +1,32 @@
-# 使用官方 Node.js 镜像作为基础
-FROM node:18-alpine
+# 使用 Node.js 22 基础镜像（建议升级到 22，与前端保持一致）
+FROM node:22-alpine AS builder
 
-# 在容器内创建工作目录
 WORKDIR /app
 
-# 先拷贝 package.json 和 package-lock.json (为了利用缓存)
+# 复制依赖文件并安装
 COPY package*.json ./
+RUN npm ci
 
-# 安装生产依赖
-RUN npm ci --only=production
-
-# 拷贝所有后端源码
+# 复制源码
 COPY . .
 
-# 暴露后端服务端口 (比如 3000)
+# 编译 TypeScript（生成 dist 目录）
+RUN npm run build
+
+# ---------- 生产阶段 ----------
+FROM node:22-alpine
+
+WORKDIR /app
+
+# 只复制生产依赖和编译后的文件
+COPY package*.json ./
+RUN npm ci --only=production
+
+# 从构建阶段复制编译产物
+COPY --from=builder /app/dist ./dist
+
+# 暴露端口（根据实际端口修改）
 EXPOSE 3000
 
-# 启动后端服务
-CMD ["node", "src/server.ts"]
+# 运行编译后的入口文件（假设编译后为 dist/server.js）
+CMD ["node", "dist/server.js"]
