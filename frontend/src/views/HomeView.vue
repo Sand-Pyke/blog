@@ -228,10 +228,7 @@
           @click.self="closeSkillDialog"
         >
           <div
-            class="bg-surface-container-lowest rounded-2xl p-6"
-            :class="
-              currentWidth === 'mobile' ? 'w-[80%]' : 'w-full max-w-[600px]'
-            "
+            class="bg-surface-container-lowest rounded-2xl w-[85%] max-w-md max-h-[50vh] overflow-y-auto p-4 md:p-6"
           >
             <div class="flex items-center justify-between mb-6">
               <h2 class="font-headline-md text-headline-md text-on-surface">

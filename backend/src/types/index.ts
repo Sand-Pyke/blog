@@ -15,7 +15,7 @@ export interface BlogPost {
   slug: string;
   content: string;
   excerpt: string;
-  category_id: string;
+  category_id?: string | null;
   author_id: string;
   status: 'draft' | 'published';
   published_at: Date | null;
@@ -70,7 +70,7 @@ export interface TokenPayload {
 }
 
 export interface BlogPostWithRelations extends BlogPost {
-  category: BlogCategory;
+  category: BlogCategory | null;
   author: User;
   tags: BlogTag[];
 }

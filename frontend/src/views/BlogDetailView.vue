@@ -7,7 +7,7 @@
     <!-- Loading State -->
     <main
       v-if="loading"
-      class="pt-32 pb-stack-xl px-gutter max-w-container-max mx-auto"
+      class="pt-20 md:pt-32 pb-stack-xl px-gutter max-w-container-max mx-auto"
     >
       <div class="animate-pulse space-y-6">
         <div class="h-4 w-40 bg-surface-container rounded"></div>
@@ -22,7 +22,7 @@
     <!-- Error State -->
     <main
       v-else-if="error"
-      class="pt-32 pb-stack-xl px-gutter max-w-container-max mx-auto text-center"
+      class="pt-20 md:pt-32 pb-stack-xl px-gutter max-w-container-max mx-auto text-center"
     >
       <p class="text-error text-lg mb-4">{{ error }}</p>
       <router-link
@@ -36,7 +36,7 @@
     <!-- Article Content -->
     <main
       v-else
-      class="pt-32 pb-stack-xl px-gutter max-w-container-max mx-auto"
+      class="pt-20 md:pt-32 pb-stack-xl px-gutter max-w-container-max mx-auto"
     >
       <!-- Article Card -->
       <div
@@ -70,18 +70,18 @@
           </div>
 
           <h1
-            class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface tracking-tight mb-4"
+            class="font-headline-md md:text-display-lg text-on-surface tracking-tight mb-2 md:mb-4"
           >
             {{ post.title }}
           </h1>
           <div
-            class="flex items-center gap-4 text-on-surface-variant font-label-xs tracking-wider"
+            class="flex flex-wrap items-center gap-x-3 gap-y-1 text-on-surface-variant text-xs md:font-label-xs tracking-wider"
           >
             <time :datetime="post.publishedAt">{{
               formatDate(post.publishedAt)
             }}</time>
             <span class="w-1 h-1 bg-outline-variant rounded-full"></span>
-            <span>阅读时长 {{ post.readingTime }} 分钟</span>
+            <span>{{ post.readingTime }} 分钟</span>
             <span class="w-1 h-1 bg-outline-variant rounded-full"></span>
             <span>{{ post.views }} 次阅读</span>
           </div>
@@ -130,16 +130,6 @@
             class="group"
           >
             <router-link :to="`/blog/${relatedPost.slug}`" class="block">
-              <!-- Cover Image -->
-              <div class="aspect-video rounded-lg overflow-hidden mb-3">
-                <img
-                  v-if="relatedPost.coverImage"
-                  :src="relatedPost.coverImage"
-                  :alt="relatedPost.title"
-                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-              <!-- Title and Excerpt -->
               <h3
                 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors mb-2"
               >

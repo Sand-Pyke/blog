@@ -17,8 +17,8 @@ export const createBlogPost = async (post: Omit<BlogPost, 'id' | 'views' | 'crea
   }
   
   const result = await query(
-    'INSERT INTO blog_posts (title, slug, content, excerpt, category_id, author_id, status, published_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
-    [post.title, slug, post.content, post.excerpt, post.category_id, post.author_id, post.status, post.published_at]
+    'INSERT INTO blog_posts (title, slug, content, excerpt, author_id, status, published_at) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+    [post.title, slug, post.content, post.excerpt, post.author_id, post.status, post.published_at]
   );
   return result.rows[0];
 };
@@ -40,7 +40,7 @@ export const getBlogPostWithRelations = async (slug: string): Promise<BlogPostWi
       bc.id as category_id, bc.name as category_name, bc.slug as category_slug, bc.description as category_description,
       u.id as author_id, u.username as author_username, u.email as author_email, u.avatar as author_avatar, u.bio as author_bio
     FROM blog_posts bp
-    JOIN blog_categories bc ON bp.category_id = bc.id
+    LEFT JOIN blog_categories bc ON bp.category_id = bc.id
     JOIN users u ON bp.author_id = u.id
     WHERE bp.slug = $1`,
     [slug]
@@ -64,14 +64,14 @@ export const getBlogPostWithRelations = async (slug: string): Promise<BlogPostWi
     views: row.views,
     created_at: row.created_at,
     updated_at: row.updated_at,
-    category: {
+    category: row.category_id ? {
       id: row.category_id,
       name: row.category_name,
       slug: row.category_slug,
       description: row.category_description,
       created_at: row.created_at,
       updated_at: row.updated_at,
-    },
+    } : null,
     author: {
       id: row.author_id,
       username: row.author_username,
@@ -131,10 +131,6 @@ export const updateBlogPost = async (id: string, post: Partial<Omit<BlogPost, 'i
   if (post.excerpt !== undefined) {
     fields.push(`excerpt = $${paramIndex++}`);
     values.push(post.excerpt);
-  }
-  if (post.category_id !== undefined) {
-    fields.push(`category_id = $${paramIndex++}`);
-    values.push(post.category_id);
   }
   if (post.status !== undefined) {
     fields.push(`status = $${paramIndex++}`);

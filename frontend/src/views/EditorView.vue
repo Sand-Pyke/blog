@@ -1,6 +1,20 @@
 <template>
   <div
-    class="bg-gradient-to-b from-surface-container-low to-surface text-on-background font-body-md text-body-md selection:bg-secondary-container selection:text-on-secondary-container min-h-screen">
+    class="bg-gradient-to-b from-surface-container-low to-surface text-on-background font-body-md text-body-md selection:bg-secondary-container selection:text-on-secondary-container min-h-screen relative">
+    <!-- Loading Overlay -->
+    <div v-if="isPublishing || isUploadingImage"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+      <div class="bg-surface-container-lowest rounded-2xl p-8 shadow-2xl flex flex-col items-center gap-4">
+        <svg class="animate-spin h-10 w-10 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+          </path>
+        </svg>
+        <span class="text-on-surface font-body-md">{{ isUploadingImage ? '图片上传中...' : '发布中...' }}</span>
+      </div>
+    </div>
+
     <TopNavBar />
 
     <main class="pt-16 pb-stack-xl max-w-[1400px] mx-auto px-gutter md:px-0">
@@ -30,24 +44,10 @@
                 class="p-2 rounded-lg hover:bg-surface-container transition-colors disabled:opacity-50" title="删除线">
                 <span class="material-symbols-outlined">strikethrough_s</span>
               </button>
-              <button @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()"
-                :class="{ 'bg-surface-container': editor?.isActive('heading', { level: 2 }) }"
-                class="p-2 rounded-lg hover:bg-surface-container transition-colors" title="标题 H2">
-                <span class="material-symbols-outlined text-sm font-bold">H2</span>
-              </button>
-              <button @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()"
-                :class="{ 'bg-surface-container': editor?.isActive('heading', { level: 3 }) }"
-                class="p-2 rounded-lg hover:bg-surface-container transition-colors" title="标题 H3">
-                <span class="material-symbols-outlined text-sm font-bold">H3</span>
-              </button>
               <button @click="editor?.chain().focus().toggleCodeBlock().run()"
                 :class="{ 'bg-surface-container-low': editor?.isActive('codeBlock') }"
                 class="p-2 rounded hover:bg-surface-container-low transition-colors" title="代码块">
                 <span class="material-symbols-outlined">code</span>
-              </button>
-              <button @click="setLink" :class="{ 'bg-surface-container-low': editor?.isActive('link') }"
-                class="p-2 rounded hover:bg-surface-container-low transition-colors" title="链接">
-                <span class="material-symbols-outlined">link</span>
               </button>
               <button @click="triggerImageUpload" :disabled="isUploadingImage"
                 class="p-2 rounded hover:bg-surface-container-low transition-colors disabled:opacity-50" title="上传图片">
@@ -75,130 +75,54 @@
             <div class="flex items-center gap-2 px-3 text-on-surface-variant font-label-xs">
               <span v-if="isUploadingImage" class="flex items-center gap-1">
                 <span class="material-symbols-outlined text-[18px] animate-spin">sync</span>
-                <span>上传�?..</span>
+                <span>上传中..</span>
               </span>
             </div>
           </div>
 
           <!-- Title Input -->
           <input v-model="title"
-            class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-4 font-headline-md text-headline-md placeholder:text-outline-variant outline-none focus:border-primary transition-colors shadow-sm"
+            class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-3 font-headline-md text-headline-md placeholder:text-outline-variant outline-none focus:border-primary transition-colors shadow-sm"
             placeholder="在此输入文章标题..." type="text" />
 
           <!-- TipTap Editor -->
           <article
-            class="bg-surface-container-lowest rounded-2xl min-h-[600px] shadow-sm border border-outline-variant/20 overflow-hidden">
-            <EditorContent :editor="editor" class="prose prose-lg max-w-none p-stack-lg focus:outline-none" />
+            class="bg-surface-container-lowest rounded-2xl min-h-[200px] shadow-sm border border-outline-variant/20 overflow-hidden">
+            <EditorContent :editor="editor" class="prose prose-lg max-w-none p-4 focus:outline-none" />
           </article>
-        </div>
-      </section>
 
-      <!-- Sidebar - Fixed Position -->
-      <aside class="fixed top-16 right-0 w-80 h-[calc(100vh-4rem)] overflow-y-auto p-6 hidden md:block">
-        <div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/20 p-4">
-          <div class="flex flex-col gap-stack-sm mb-4">
-            <h3 class="font-headline-md text-headline-md text-on-surface">发布设置</h3>
-            <p class="text-on-surface-variant font-label-xs">管理文章的分类与可见性</p>
-          </div>
-
-          <div class="flex flex-col gap-3 mb-4">
-            <label class="font-label-xs text-primary font-bold uppercase tracking-wider">发布类型</label>
-            <div class="flex gap-2">
-              <button @click="postType = 'blog'" :class="[
-                'flex-1 py-3 rounded-lg font-body-md transition-all border',
-                postType === 'blog'
-                  ? 'bg-primary text-on-primary border-primary shadow-sm'
-                  : 'bg-surface-container text-on-surface-variant border-outline hover:border-primary'
-              ]">
-                博客文章
-              </button>
-              <button @click="postType = 'daily'" :class="[
-                'flex-1 py-3 rounded-lg font-body-md transition-all border',
-                postType === 'daily'
-                  ? 'bg-primary text-on-primary border-primary shadow-sm'
-                  : 'bg-surface-container text-on-surface-variant border-outline hover:border-primary'
-              ]">
-                日常分享
-              </button>
-            </div>
-          </div>
-
-          <!-- Category (only for blog) -->
-          <div v-if="postType === 'blog'" class="flex flex-col gap-3 mb-4">
-            <label class="font-label-xs text-primary font-bold uppercase tracking-wider">文章分类</label>
-            <el-select :popper-options="{
-              strategy: 'fixed'
-            }" v-model="categoryId" placeholder="请选择分类" class="w-full">
-              <el-option v-for="category in categories" :key="category.id" :label="category.name"
-                :value="category.id" />
-            </el-select>
-          </div>
-          <div v-if="postType === 'daily'" class="flex flex-col gap-3 mb-4">
-            <label class="font-label-xs text-primary font-bold uppercase tracking-wider">分享类型</label>
-            <el-select :popper-options="{
-              strategy: 'fixed'
-            }" v-model="dailyType" placeholder="请选择类型" class="w-full">
-              <el-option label="文字" value="text" />
-              <el-option label="图片" value="image" />
-              <el-option label="代码片段" value="code" />
-              <el-option label="读书笔记" value="book" />
-            </el-select>
-          </div>
-
-          <!-- Tags -->
-          <div class="flex flex-col gap-3 mb-4">
-            <label class="font-label-xs text-primary font-bold uppercase tracking-wider">标签</label>
-            <div class="flex flex-wrap gap-2">
-              <span v-for="(tag, index) in tagIds" :key="index"
-                class="px-3 py-1 bg-surface-container-high rounded-full font-code-sm text-on-surface-variant flex items-center gap-1">
-                {{ getTagName(tag) }}
-                <button @click="removeTag(index)" class="hover:text-error">
-                  <span class="material-symbols-outlined text-[14px]">close</span>
+          <!-- Publish Section -->
+          <div class="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-4 shadow-sm">
+            <div class="flex items-center gap-4">
+              <div class="flex gap-2">
+                <button @click="postType = 'blog'" :disabled="isPublishing"
+                  :class="[
+                    'px-4 py-2 rounded-lg font-body-sm transition-all border',
+                    postType === 'blog'
+                      ? 'bg-primary text-on-primary border-primary shadow-sm'
+                      : 'bg-surface-container text-on-surface-variant border-outline hover:border-primary'
+                  ]">
+                  博客文章
                 </button>
-              </span>
-              <button @click="showTagSelector = !showTagSelector"
-                class="px-3 py-1 border border-dashed border-outline rounded-full font-code-sm text-on-surface-variant hover:border-primary hover:text-primary transition-colors flex items-center gap-1">
-                <span class="material-symbols-outlined text-[14px]">add</span> 添加
-              </button>
-            </div>
-            <!-- Tag Selector Dropdown -->
-            <div v-if="showTagSelector"
-              class="p-3 bg-surface-container-lowest border border-outline-variant rounded-lg">
-              <div class="flex flex-wrap gap-2">
-                <button v-for="tag in availableTags.filter(t => !tagIds.includes(t.id))" :key="tag.id"
-                  @click="addTag(tag.id)"
-                  class="px-2 py-1 text-xs bg-surface-container rounded hover:bg-surface-container-high transition-colors">
-                  + {{ tag.name }}
+                <button @click="postType = 'daily'" :disabled="isPublishing"
+                  :class="[
+                    'px-4 py-2 rounded-lg font-body-sm transition-all border',
+                    postType === 'daily'
+                      ? 'bg-primary text-on-primary border-primary shadow-sm'
+                      : 'bg-surface-container text-on-surface-variant border-outline hover:border-primary'
+                  ]">
+                  日常分享
                 </button>
               </div>
+
+              <button @click="publishPost" :disabled="isPublishing || !isValidPost"
+                class="ml-auto px-6 py-2 bg-primary text-on-primary font-body-md rounded-lg hover:bg-primary/90 transition-all active:scale-[0.98] shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed">
+                发布{{ postType === 'blog' ? '文章' : '日常' }}
+              </button>
             </div>
           </div>
-
-          <!-- Error/Success Messages -->
-          <div v-if="errorMessage" class="p-3 bg-error-container text-on-error-container rounded-lg text-sm">
-            {{ errorMessage }}
-          </div>
-          <div v-if="successMessage" class="p-3 bg-tertiary-container text-on-tertiary-container rounded-lg text-sm">
-            {{ successMessage }}
-          </div>
-
-          <div class="mt-auto pt-stack-lg border-t border-outline-variant/30 flex flex-col gap-3">
-            <button @click="publishPost" :disabled="isPublishing || !isValidPost"
-              class="w-full py-4 bg-primary text-on-primary font-headline-md rounded-xl hover:bg-primary/90 transition-all active:scale-[0.98] shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-              <span v-if="isPublishing" class="flex items-center gap-2">
-                发布�?..
-                <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                  </path>
-                </svg>
-              </span>
-              <span v-else>发布{{ postType === 'blog' ? '文章' : '日常' }}</span>
-            </button>
-          </div>
         </div>
-      </aside>
+      </section>
     </main>
 
     <Footer />
@@ -226,18 +150,11 @@ const authStore = useAuthStore();
 
 const title = ref('');
 const postType = ref<'blog' | 'daily'>('blog');
-const categoryId = ref<any>('');
-const dailyType = ref<'text' | 'image' | 'code' | 'book'>('text');
-const tagIds = ref<string[]>([]);
-const showTagSelector = ref(false);
 const isPublishing = ref(false);
 const errorMessage = ref('');
 const successMessage = ref('');
 const imageInput = ref<HTMLInputElement | null>(null);
 const isUploadingImage = ref(false);
-
-const categories = ref<any[]>([]);
-const availableTags = ref<{ id: string; name: string; slug: string }[]>([]);
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -253,7 +170,7 @@ const editor = useEditor({
     }),
     Link.configure({
       openOnClick: false,
-      autolink: true,
+      autolink: false,
       linkOnPaste: true,
       HTMLAttributes: {
         class: 'text-primary underline cursor-pointer',
@@ -277,14 +194,14 @@ const editor = useEditor({
   ],
   editorProps: {
     attributes: {
-      class: 'focus:outline-none min-h-[500px]',
+      class: 'focus:outline-none min-h-[150px]',
     },
   },
 });
 
 
 const isValidPost = computed(() => {
-  if (Number(title.value.trim().length) > 0) return false;
+  if (!title.value.trim()) return false;
   if (!editor.value) return false;
 
   // 检查是否有内容（包括图片）
@@ -294,34 +211,6 @@ const isValidPost = computed(() => {
 
   return hasText || hasImages;
 });
-
-// Fetch categories and tags
-const fetchCategories = async () => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/blog/categories`);
-    if (response.ok) {
-      categories.value = await response.json();
-      if (categories.value.length > 0 && !categoryId.value) {
-        if (Array.isArray(categories.value) && categories.value.length > 0 && categories.value[0] && categories.value[0].id !== undefined) {
-          categoryId.value = categories.value[0].id;
-        } else {
-          categoryId.value = null;
-        }
-      }
-    }
-  } catch (error) {
-      }
-};
-
-const fetchTags = async () => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/blog/tags`);
-    if (response.ok) {
-      availableTags.value = await response.json();
-    }
-  } catch (error) {
-      }
-};
 
 // Link handler
 const setLink = () => {
@@ -421,23 +310,6 @@ const handleImageUpload = async (event: Event) => {
   }
 };
 
-// Tag handlers
-const getTagName = (tagId: string) => {
-  const tag = availableTags.value.find(t => t.id === tagId);
-  return tag?.name || tagId;
-};
-
-const addTag = (tagId: string) => {
-  if (!tagIds.value.includes(tagId)) {
-    tagIds.value.push(tagId);
-  }
-  showTagSelector.value = false;
-};
-
-const removeTag = (index: number) => {
-  tagIds.value.splice(index, 1);
-};
-
 // Generate slug from title
 const generateSlug = (text: string) => {
   return text
@@ -451,11 +323,7 @@ const generateSlug = (text: string) => {
 const publishPost = async () => {
   if (!isValidPost.value) {
     errorMessage.value = '请填写标题和内容';
-    return;
-  }
-
-  if (postType.value === 'blog' && !categoryId.value) {
-    errorMessage.value = '请选择文章分类';
+    setTimeout(() => errorMessage.value = '', 3000);
     return;
   }
 
@@ -466,6 +334,12 @@ const publishPost = async () => {
   try {
     const content = editor.value?.getHTML() || '';
     const text = editor.value?.getText().substring(0, 200) || '';
+
+    // 创建超时控制器
+    const timeoutController = new AbortController();
+    const timeoutId = setTimeout(() => {
+      timeoutController.abort();
+    }, 10000); // 10秒超时
 
     if (postType.value === 'blog') {
       // Publish to blog
@@ -482,11 +356,12 @@ const publishPost = async () => {
           slug: slugValue,
           content,
           excerpt: text,
-          category_id: categoryId.value,
-          tags: tagIds.value,
           status: 'published'
-        })
+        }),
+        signal: timeoutController.signal
       });
+
+      clearTimeout(timeoutId);
 
       const data = await response.json();
 
@@ -500,7 +375,6 @@ const publishPost = async () => {
       setTimeout(() => {
         title.value = '';
         editor.value?.commands.setContent('');
-        tagIds.value = [];
         successMessage.value = '';
         router.push('/');
       }, 1500);
@@ -514,15 +388,16 @@ const publishPost = async () => {
         },
         body: JSON.stringify({
           content: content || title.value,
-          type: dailyType.value,
+          type: 'text',
           metadata: JSON.stringify({
             title: title.value,
-            html: content,
-            tags: tagIds.value,
-            images: []
+            html: content
           })
-        })
+        }),
+        signal: timeoutController.signal
       });
+
+      clearTimeout(timeoutId);
 
       const data = await response.json();
 
@@ -536,34 +411,21 @@ const publishPost = async () => {
       setTimeout(() => {
         title.value = '';
         editor.value?.commands.setContent('');
-        tagIds.value = [];
         successMessage.value = '';
         router.push('/daily');
       }, 1500);
     }
   } catch (error: any) {
-        errorMessage.value = error.message || '发布失败，请稍后重试';
+    if (error.name === 'AbortError') {
+      errorMessage.value = '发布超时，请重试';
+    } else {
+      errorMessage.value = error.message || '发布失败，请稍后重试';
+    }
+    setTimeout(() => errorMessage.value = '', 3000);
   } finally {
     isPublishing.value = false;
   }
 };
-
-// Reset category when switching post type
-watch(postType, (newType) => {
-  if (newType === 'blog' && categories.value.length > 0 && !categoryId.value) {
-    categoryId.value = categories.value[0].id;
-  }
-});
-
-const handleLogout = () => {
-  authStore.logout();
-  router.push('/login');
-};
-
-onMounted(() => {
-  fetchCategories();
-  fetchTags();
-});
 
 onBeforeUnmount(() => {
   editor.value?.destroy();
@@ -579,11 +441,11 @@ onBeforeUnmount(() => {
 
 /* TipTap Editor Styles */
 .prose {
-  color: theme('colors.on-surface');
+  color: var(--color-on-surface);
 }
 
 .prose h2 {
-  color: theme('colors.on-surface');
+  color: var(--color-on-surface);
   font-size: 1.5em;
   font-weight: 700;
   margin-top: 1.5em;
@@ -591,7 +453,7 @@ onBeforeUnmount(() => {
 }
 
 .prose h3 {
-  color: theme('colors.on-surface');
+  color: var(--color-on-surface);
   font-size: 1.25em;
   font-weight: 600;
   margin-top: 1.25em;
@@ -614,21 +476,21 @@ onBeforeUnmount(() => {
 }
 
 .prose blockquote {
-  border-left: 3px solid theme('colors.primary');
+  border-left: 3px solid var(--color-primary);
   padding-left: 1em;
-  color: theme('colors.on-surface-variant');
+  color: var(--color-on-surface-variant);
   font-style: italic;
 }
 
 .prose code {
-  background: theme('colors.surface-container-high');
+  background: var(--color-surface-container-high);
   padding: 0.2em 0.4em;
   border-radius: 0.25em;
   font-size: 0.9em;
 }
 
 .prose pre {
-  background: theme('colors.surface-container-high');
+  background: var(--color-surface-container-high);
   padding: 1em;
   border-radius: 0.5em;
   overflow-x: auto;
@@ -640,7 +502,7 @@ onBeforeUnmount(() => {
 }
 
 .prose a {
-  color: theme('colors.primary');
+  color: var(--color-primary);
   text-decoration: underline;
 }
 
@@ -652,13 +514,13 @@ onBeforeUnmount(() => {
 
 .prose hr {
   border: none;
-  border-top: 1px solid theme('colors.outline-variant');
+  border-top: 1px solid var(--color-outline-variant);
   margin: 2em 0;
 }
 
 /* Placeholder */
 .prose p.is-editor-empty:first-child::before {
-  color: theme('colors.outline');
+  color: var(--color-outline);
   content: attr(data-placeholder);
   float: left;
   height: 0;

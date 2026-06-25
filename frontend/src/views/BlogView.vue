@@ -20,29 +20,6 @@
         </div>
       </section>
 
-      <!-- Categories Filter -->
-      <section class="mb-stack-lg">
-        <div
-          class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/20 p-6"
-        >
-          <nav class="flex flex-wrap gap-3">
-            <button
-              v-for="category in categories"
-              :key="category.id"
-              @click="selectCategory(category.id)"
-              class="category-pill px-4 py-1.5 rounded-full text-label-xs font-label-xs transition-all"
-              :class="
-                selectedCategory === category.id
-                  ? 'active bg-primary text-white'
-                  : 'bg-surface-container hover:bg-outline-variant/20'
-              "
-            >
-              {{ category.name }}
-            </button>
-          </nav>
-        </div>
-      </section>
-
       <!-- Loading State -->
       <div v-if="loading" class="space-y-stack-lg">
         <div
@@ -109,13 +86,6 @@
               "
             >
               <div class="order-2 md:order-1">
-                <span
-                  v-if="post.category"
-                  class="text-label-xs font-label-xs px-2 py-0.5 rounded mb-2 inline-block uppercase"
-                  :class="getCategoryClass(post.category.name)"
-                >
-                  {{ post.category.name }}
-                </span>
                 <h2
                   class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors mb-2"
                 >
@@ -217,42 +187,7 @@ const loading = ref(true);
 const error = ref("");
 const blogs = ref<BlogPost[]>([]);
 const totalPages = ref(1);
-const selectedCategory = ref("all");
 const currentPage = ref(1);
-const categoriesLoading = ref(true);
-const switchingCategory = ref(false);
-
-const categories = ref<
-  { id: string; name: string; slug: string; color: string }[]
->([]);
-
-// 获取分类列表
-const fetchCategories = async () => {
-  try {
-    categoriesLoading.value = true;
-    const response = await fetch("/api/blog/categories");
-    if (!response.ok) throw new Error("Failed to fetch categories");
-    const data = await response.json();
-
-    // 添加"全部"选项
-    categories.value = [
-      { id: "all", name: "全部", slug: "all", color: "#004ac6" },
-      ...data.map((cat: any) => ({
-        id: cat.id?.toString() || cat.slug,
-        name: cat.name,
-        slug: cat.slug,
-        color: "#42b883",
-      })),
-    ];
-  } catch (err) {
-    // 失败时使用默认选项
-    categories.value = [
-      { id: "all", name: "全部", slug: "all", color: "#004ac6" },
-    ];
-  } finally {
-    categoriesLoading.value = false;
-  }
-};
 
 // �?HTML 内容中提取第一张图片的 URL
 const extractFirstImage = (content: string): string => {
@@ -273,24 +208,12 @@ const extractFirstImage = (content: string): string => {
   return "";
 };
 
-const fetchBlogs = async (isCategorySwitch = false) => {
+const fetchBlogs = async () => {
   try {
-    if (isCategorySwitch) {
-      switchingCategory.value = true;
-    } else {
-      loading.value = true;
-    }
+    loading.value = true;
     error.value = "";
 
-    const params: { status: string; category?: string } = {
-      status: "published",
-    };
-
-    if (selectedCategory.value !== "all") {
-      params.category = selectedCategory.value;
-    }
-
-    const response = await api.getBlogs(params);
+    const response = await api.getBlogs({ status: "published" });
     const blogsData = Array.isArray(response) ? response : response.blogs || [];
 
     blogs.value = blogsData.map((blog: any) => {
@@ -306,14 +229,6 @@ const fetchBlogs = async (isCategorySwitch = false) => {
         content: blog.content || "",
         coverImage: coverImage,
         author: blog.author || {},
-        category: blog.category
-          ? {
-              id: blog.category.toString(),
-              name: blog.category,
-              slug: blog.category,
-              color: "#42b883",
-            }
-          : null,
         tags: blog.tags || [],
         publishedAt: blog.created_at || blog.publishedAt,
         readingTime: Math.ceil((blog.content?.length || 500) / 500),
@@ -324,19 +239,12 @@ const fetchBlogs = async (isCategorySwitch = false) => {
       };
     });
 
-    totalPages.value = 1; // 后端暂时没有分页信息
+    totalPages.value = 1;
   } catch (err: any) {
     error.value = err.message || "加载失败";
   } finally {
     loading.value = false;
-    switchingCategory.value = false;
   }
-};
-
-const selectCategory = (categoryId: string) => {
-  selectedCategory.value = categoryId;
-  currentPage.value = 1;
-  fetchBlogs(true);
 };
 
 const goToPage = (page: number) => {
@@ -367,23 +275,6 @@ const displayedPages = computed(() => {
   return pages;
 });
 
-const getCategoryClass = (categoryName: string) => {
-  const colorMap: Record<string, string> = {
-    Frontend: "text-secondary-fixed-dim bg-secondary-container/50",
-    前端技术: "text-secondary-fixed-dim bg-secondary-container/50",
-    技术分享: "text-secondary-fixed-dim bg-secondary-container/50",
-    Performance: "text-tertiary-container bg-tertiary-fixed/30",
-    Daily: "text-secondary-fixed-dim bg-secondary-container/50",
-    日常分享: "text-secondary-fixed-dim bg-secondary-container/50",
-    Design: "text-tertiary-container bg-tertiary-fixed/30",
-  };
-
-  return (
-    colorMap[categoryName] ||
-    "text-secondary-fixed-dim bg-secondary-container/50"
-  );
-};
-
 const formatDate = (dateString: string) => {
   if (!dateString) return "";
   const date = new Date(dateString);
@@ -395,7 +286,6 @@ const formatDate = (dateString: string) => {
 };
 
 onMounted(() => {
-  fetchCategories();
   fetchBlogs();
 });
 </script>

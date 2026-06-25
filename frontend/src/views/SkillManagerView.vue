@@ -134,11 +134,11 @@
         <transition name="dialog">
           <div
             v-if="showModal"
-            class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 md:p-6"
             @click.self="closeModal"
           >
             <div
-              class="bg-surface-container-lowest rounded-2xl w-full max-w-md p-6"
+              class="bg-surface-container-lowest rounded-2xl w-[85%] max-w-md max-h-[50vh] overflow-y-auto p-4 md:p-6"
             >
               <div class="flex items-center justify-between mb-6">
                 <h2 class="font-headline-md text-headline-md text-on-surface">
