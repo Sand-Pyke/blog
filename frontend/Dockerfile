@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-RUN npm run build         # 执行构建命令，生成 dist 文件夹
+RUN npx vite build        # 执行构建命令，生成 dist 文件夹
 
 # 阶段二：运行阶段
 FROM nginx:stable-alpine
