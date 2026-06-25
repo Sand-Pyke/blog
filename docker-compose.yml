@@ -31,6 +31,7 @@ services:
       DB_PASSWORD: 293617
       DB_NAME: blog_db
       DB_PORT: 5432
+      JWT_SECRET: wxh-blog-jwt-secret-2026
     ports:
       - "3000:3000"
 
