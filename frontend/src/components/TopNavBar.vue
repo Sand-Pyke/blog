@@ -1,16 +1,16 @@
 <template>
   <header class="fixed top-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/30">
-    <!-- Reading Progress Bar -->
     <div 
       class="absolute bottom-0 top-0 left-0 h-[2px] bg-primary transition-all duration-100"
       :style="{ width: progressPercentage + '%' }"
     />
     
     <div class="flex justify-between items-center px-gutter max-w-container-max mx-auto h-16">
-      <router-link to="/" class="font-pacifico text-2xl font-bold text-primary">
+      <router-link to="/" class="font-pacifico text-2xl font-bold text-primary shrink-0">
         王孝虎的博客
       </router-link>
       
+      <!-- Desktop Nav -->
       <nav class="hidden md:flex items-center gap-6">
         <router-link 
           v-for="item in visibleNavItems" 
@@ -23,11 +23,11 @@
         </router-link>
       </nav>
       
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 md:gap-4">
         <button 
           @click="toggleDarkMode"
           class="text-on-surface-variant hover:text-primary transition-all duration-200 active:scale-95 p-2 rounded-lg hover:bg-surface-container-high"
-          :title="isDark ? '切换到浅色模�? : '切换到深色模�?"
+          :title="isDark ? '切换到浅色模式' : '切换到深色模式'"
         >
           <span class="material-symbols-outlined text-2xl">{{ isDark ? 'light_mode' : 'dark_mode' }}</span>
         </button>
@@ -43,7 +43,6 @@
             </div>
           </button>
           
-          <!-- Dropdown Menu -->
           <div v-if="showUserMenu" class="absolute right-0 mt-2 w-48 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-lg py-2">
             <div class="px-4 py-2 border-b border-outline-variant/30">
               <p class="font-body-md text-on-surface font-medium">{{ authStore.user?.username }}</p>
@@ -54,21 +53,44 @@
               class="w-full flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:bg-surface-container transition-colors"
             >
               <span class="material-symbols-outlined text-[18px]">logout</span>
-              退出登�?
+              退出登录
             </button>
           </div>
         </div>
         
-        <!-- Login Button -->
         <router-link 
           v-if="!authStore.isAuthenticated"
           to="/login"
-          class="px-4 py-2 bg-primary text-on-primary rounded-lg hover:bg-primary/90 transition-colors font-body-md"
+          class="px-3 py-1.5 md:px-4 md:py-2 bg-primary text-on-primary rounded-lg hover:bg-primary/90 transition-colors font-body-md text-sm md:text-base"
         >
           登录
         </router-link>
+
+        <!-- Mobile menu button -->
+        <button 
+          class="md:hidden p-2 text-on-surface-variant hover:text-on-surface"
+          @click="mobileMenuOpen = !mobileMenuOpen"
+        >
+          <span class="material-symbols-outlined text-2xl">{{ mobileMenuOpen ? 'close' : 'menu' }}</span>
+        </button>
       </div>
     </div>
+
+    <!-- Mobile slide-down menu -->
+    <Transition name="slide-down">
+      <nav v-if="mobileMenuOpen" class="md:hidden bg-surface-container-lowest border-t border-outline-variant/30 px-gutter py-4">
+        <router-link 
+          v-for="item in visibleNavItems" 
+          :key="item.path"
+          :to="item.path"
+          @click="mobileMenuOpen = false"
+          class="block py-3 font-body-md transition-colors border-l-2 pl-3"
+          :class="isActive(item.path) ? 'text-primary border-primary font-semibold' : 'text-on-surface-variant border-transparent hover:text-primary'"
+        >
+          {{ item.label }}
+        </router-link>
+      </nav>
+    </Transition>
   </header>
   
   <!-- Logout Confirm Dialog -->
@@ -82,7 +104,7 @@
         <div class="bg-surface-container-lowest rounded-2xl w-full max-w-md p-6">
           <div class="flex items-center justify-between mb-6">
             <h2 class="font-headline-md text-headline-md text-on-surface">
-              退出登录确�?
+              退出登录确认
             </h2>
             <button 
               @click="showLogoutConfirm = false"
@@ -97,8 +119,8 @@
               <span class="material-symbols-outlined text-on-error-container text-2xl">logout</span>
             </div>
             <div>
-              <p class="text-on-surface font-body-md mb-2">确定要退出登录吗�?/p>
-              <p class="text-on-surface-variant font-body-sm">退出后需要重新登录才能访问管理功�?/p>
+              <p class="text-on-surface font-body-md mb-2">确定要退出登录吗？</p>
+              <p class="text-on-surface-variant font-body-sm">退出后需要重新登录才能访问管理功能</p>
             </div>
           </div>
 
@@ -113,7 +135,7 @@
               @click="confirmLogout"
               class="flex-1 py-3 bg-error text-on-error font-body-md rounded-lg hover:bg-error/90 transition-all"
             >
-              退出登�?
+              退出登录
             </button>
           </div>
         </div>
@@ -136,12 +158,13 @@ const isDark = ref(false);
 const showUserMenu = ref(false);
 const userMenuRef = ref<HTMLElement | null>(null);
 const showLogoutConfirm = ref(false);
+const mobileMenuOpen = ref(false);
 const isLocked = useScrollLock(document.documentElement);
 
 watch(showLogoutConfirm, (val) => {
   isLocked.value = val;
 });
-// �?localStorage 恢复主题设置
+
 const initTheme = () => {
   const savedTheme = localStorage.getItem('theme');
   if (savedTheme === 'dark') {
@@ -151,13 +174,11 @@ const initTheme = () => {
     isDark.value = false;
     document.documentElement.classList.remove('dark');
   } else {
-    // 默认跟随系统偏好
     isDark.value = window.matchMedia('(prefers-color-scheme: dark)').matches;
     document.documentElement.classList.toggle('dark', isDark.value);
   }
 };
 
-// Reading Progress
 const progressPercentage = ref(0);
 
 const updateProgress = () => {
@@ -170,13 +191,25 @@ const updateProgress = () => {
   }
 };
 
+const handleClickOutside = (event: MouseEvent) => {
+  if (userMenuRef.value && !userMenuRef.value.contains(event.target as Node)) {
+    showUserMenu.value = false;
+  }
+};
+
 onMounted(() => {
   initTheme();
   window.addEventListener('scroll', updateProgress);
+  document.addEventListener('click', handleClickOutside);
 });
 
 onUnmounted(() => {
   window.removeEventListener('scroll', updateProgress);
+  document.removeEventListener('click', handleClickOutside);
+});
+
+watch(() => route.path, () => {
+  mobileMenuOpen.value = false;
 });
 
 const allNavItems: NavItem[] = [
@@ -185,8 +218,8 @@ const allNavItems: NavItem[] = [
   { label: '日常', path: '/daily' }
 ];
 
-const editorNavItem: NavItem = { label: '写文�?, path: '/editor' };
-const skillsNavItem: NavItem = { label: '技能管�?, path: '/skills' };
+const editorNavItem: NavItem = { label: '写文章', path: '/editor' };
+const skillsNavItem: NavItem = { label: '技能管理', path: '/skills' };
 
 const visibleNavItems = computed(() => {
   if (authStore.isAuthenticated) {
@@ -220,21 +253,6 @@ const confirmLogout = () => {
   authStore.logout();
   router.push('/login');
 };
-
-// 点击外部关闭用户菜单
-const handleClickOutside = (event: MouseEvent) => {
-  if (userMenuRef.value && !userMenuRef.value.contains(event.target as Node)) {
-    showUserMenu.value = false;
-  }
-};
-
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside);
-});
-
-onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside);
-});
 </script>
 
 <style scoped>
@@ -242,5 +260,22 @@ onUnmounted(() => {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   display: inline-block;
   vertical-align: middle;
+}
+
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition: all 0.25s ease-out;
+}
+.slide-down-enter-from,
+.slide-down-leave-to {
+  opacity: 0;
+  max-height: 0;
+  transform: translateY(-8px);
+}
+.slide-down-enter-to,
+.slide-down-leave-from {
+  opacity: 1;
+  max-height: 400px;
+  transform: translateY(0);
 }
 </style>
