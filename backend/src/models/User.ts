@@ -1,5 +1,5 @@
-import { query } from '../config/db.js';
-import { User } from '../types/index.js';
+import { query } from '../config/db';
+import { User } from '../types';
 import bcrypt from 'bcrypt';
 
 export const createUser = async (user: Omit<User, 'id' | 'created_at' | 'updated_at'>): Promise<User> => {

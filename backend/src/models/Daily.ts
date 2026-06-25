@@ -1,5 +1,5 @@
-import { query } from '../config/db.js';
-import { DailyEntry, DailyEntryWithAuthor } from '../types/index.js';
+import { query } from '../config/db';
+import { DailyEntry, DailyEntryWithAuthor } from '../types';
 
 export const createDailyEntry = async (entry: Omit<DailyEntry, 'id' | 'created_at'>): Promise<DailyEntry> => {
   const result = await query(

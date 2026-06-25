@@ -1,5 +1,5 @@
 import express from 'express';
-import { authenticateToken } from '../middleware/auth.js';
+import { authenticateToken } from '../middleware/auth';
 import {
   createBlogPost,
   getBlogPostWithRelations,
@@ -19,7 +19,7 @@ import {
   removePostTags,
   getPostsByTag,
   countPostsByCategory,
-} from '../models/Blog.js';
+} from '../models/Blog';
 
 const router = express.Router();
 

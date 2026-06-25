@@ -1,5 +1,5 @@
-import { query } from '../config/db.js';
-import { BlogPost, BlogCategory, BlogTag, BlogPostWithRelations } from '../types/index.js';
+import { query } from '../config/db';
+import { BlogPost, BlogCategory, BlogTag, BlogPostWithRelations } from '../types';
 
 export const createBlogPost = async (post: Omit<BlogPost, 'id' | 'views' | 'created_at' | 'updated_at'>): Promise<BlogPost> => {
   // 处理 slug 重复的情况

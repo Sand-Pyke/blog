@@ -1,7 +1,7 @@
 import express from 'express';
-import { getUserByEmail, getUserByUsername, getUserById, updateUser, verifyPassword } from '../models/User.js';
-import { authenticateToken, generateToken } from '../middleware/auth.js';
-import { User } from '../types/index.js';
+import { getUserByEmail, getUserByUsername, getUserById, updateUser, verifyPassword } from '../models/User';
+import { authenticateToken, generateToken } from '../middleware/auth';
+import { User } from '../types';
 
 const router = express.Router();
 

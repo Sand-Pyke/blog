@@ -1,5 +1,5 @@
-import { query } from '../config/db.js';
-import { Skill } from '../types/index.js';
+import { query } from '../config/db';
+import { Skill } from '../types';
 
 export const createSkill = async (skill: Omit<Skill, 'id' | 'created_at'>): Promise<Skill> => {
   const result = await query(
