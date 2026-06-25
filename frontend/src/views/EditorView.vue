@@ -77,12 +77,6 @@
                 <span class="material-symbols-outlined text-[18px] animate-spin">sync</span>
                 <span>上传中...</span>
               </span>
-              <span v-else class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-[18px]" :class="{ 'animate-spin': isSaving }">
-                  {{ saveStatus === '保存中...' ? 'sync' : 'cloud_done' }}
-                </span>
-                <span>{{ saveStatus }}</span>
-              </span>
             </div>
           </div>
 
@@ -139,8 +133,6 @@
                 :value="category.id" />
             </el-select>
           </div>
-
-          Daily Type (only for daily)
           <div v-if="postType === 'daily'" class="flex flex-col gap-3 mb-4">
             <label class="font-label-xs text-primary font-bold uppercase tracking-wider">分享类型</label>
             <el-select :popper-options="{
@@ -204,10 +196,6 @@
               </span>
               <span v-else>发布{{ postType === 'blog' ? '文章' : '日常' }}</span>
             </button>
-            <button @click="saveDraft" :disabled="isSaving"
-              class="w-full py-3 border border-outline text-on-surface-variant font-body-md rounded-lg hover:bg-surface-container-high transition-all disabled:opacity-50">
-              存为草稿
-            </button>
           </div>
         </div>
       </aside>
@@ -242,8 +230,6 @@ const categoryId = ref('');
 const dailyType = ref<'text' | 'image' | 'code' | 'book'>('text');
 const tagIds = ref<string[]>([]);
 const showTagSelector = ref(false);
-const isSaving = ref(false);
-const saveStatus = ref('已保存');
 const isPublishing = ref(false);
 const errorMessage = ref('');
 const successMessage = ref('');
@@ -514,7 +500,7 @@ const publishPost = async () => {
 
       successMessage.value = '文章发布成功！';
 
-      // Reset form and navigate to home
+      // Clear editor and navigate to home
       setTimeout(() => {
         title.value = '';
         editor.value?.commands.setContent('');
@@ -537,7 +523,7 @@ const publishPost = async () => {
             title: title.value,
             html: content,
             tags: tagIds.value,
-            images: [] // 编辑器中的图片会在 HTML 中，这里暂时为空
+            images: []
           })
         })
       });
@@ -550,7 +536,7 @@ const publishPost = async () => {
 
       successMessage.value = '日常分享发布成功！';
 
-      // Reset form and navigate to daily page
+      // Clear editor and navigate to daily page
       setTimeout(() => {
         title.value = '';
         editor.value?.commands.setContent('');
@@ -567,65 +553,11 @@ const publishPost = async () => {
   }
 };
 
-// Save draft
-const saveDraft = async () => {
-  if (!editor.value) return;
-
-  isSaving.value = true;
-  saveStatus.value = '保存中...';
-
-  try {
-    const content = editor.value.getHTML();
-    const text = editor.value.getText();
-
-    const response = await fetch(`${API_BASE_URL}/blog/posts`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      },
-      body: JSON.stringify({
-        title: title.value || '未命名文章',
-        slug: generateSlug(title.value) || `draft-${Date.now()}`,
-        content,
-        excerpt: text.substring(0, 200),
-        category_id: categoryId.value,
-        tags: tagIds.value,
-        status: 'draft'
-      })
-    });
-
-    if (response.ok) {
-      saveStatus.value = '已保存';
-    } else {
-      saveStatus.value = '保存失败';
-    }
-  } catch (error) {
-    saveStatus.value = '保存失败';
-  } finally {
-    isSaving.value = false;
-  }
-};
-
-// Auto save
-let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
-
 // Reset category when switching post type
 watch(postType, (newType) => {
   if (newType === 'blog' && categories.value.length > 0 && !categoryId.value) {
     categoryId.value = categories.value[0].id;
   }
-});
-
-watch([title, () => editor.value?.getHTML()], () => {
-  if (autoSaveTimer) {
-    clearTimeout(autoSaveTimer);
-  }
-  autoSaveTimer = setTimeout(() => {
-    if (title.value.trim() || (editor.value && editor.value.getText().trim())) {
-      saveDraft();
-    }
-  }, 3000);
 });
 
 const handleLogout = () => {
@@ -640,9 +572,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   editor.value?.destroy();
-  if (autoSaveTimer) {
-    clearTimeout(autoSaveTimer);
-  }
 });
 </script>
 

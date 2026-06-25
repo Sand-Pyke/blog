@@ -6,11 +6,14 @@ import { authenticateToken } from '../middleware/auth';
 
 const router = express.Router();
 
-// 确保uploads目录存在
-const uploadsDir = path.join(__dirname, '../../uploads');
+// 使用 .env 配置的上传目录，默认 backend/uploads/
+const uploadDir = process.env.UPLOAD_DIR || 'uploads';
+const uploadsDir = path.resolve(process.cwd(), uploadDir);
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
+
+const maxFileSize = parseInt(process.env.MAX_FILE_SIZE || '5242880'); // 默认 5MB
 
 // 配置multer存储
 const storage = multer.diskStorage({
@@ -18,9 +21,9 @@ const storage = multer.diskStorage({
     cb(null, uploadsDir);
   },
   filename: (req, file, cb) => {
-    // 生成唯一文件名
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    // 生成唯一文件名，保留原始扩展名
     const ext = path.extname(file.originalname);
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, 'image-' + uniqueSuffix + ext);
   }
 });
@@ -40,7 +43,7 @@ const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024 // 限制5MB
+    fileSize: maxFileSize
   }
 });
 
@@ -71,7 +74,8 @@ router.post('/image', authenticateToken, upload.single('image'), (req, res) => {
 router.use((error: any, req: any, res: any, next: any) => {
   if (error instanceof multer.MulterError) {
     if (error.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({ error: '文件大小不能超过5MB' });
+      const sizeMB = Math.round(maxFileSize / 1024 / 1024);
+      return res.status(400).json({ error: `文件大小不能超过${sizeMB}MB` });
     }
     return res.status(400).json({ error: error.message });
   }

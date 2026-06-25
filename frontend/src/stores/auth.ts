@@ -37,7 +37,6 @@ export const useAuthStore = defineStore('auth', () => {
 
   const login = async (params: { email: string; password: string }): Promise<boolean> => {
     isLoading.value = true
-    
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
@@ -51,15 +50,12 @@ export const useAuthStore = defineStore('auth', () => {
         const error = await response.json()
         throw new Error(error.message || '登录失败')
       }
-
       const data = await response.json()
-      
       if (data.token) {
         setToken(data.token)
         setUser(data.user)
         return true
       }
-      
       return false
     } catch (error: any) {
       console.error('Login error:', error)
@@ -71,7 +67,6 @@ export const useAuthStore = defineStore('auth', () => {
 
   const fetchUserInfo = async (): Promise<boolean> => {
     if (!token.value) return false
-
     try {
       const response = await fetch(`${API_BASE_URL}/auth/me`, {
         headers: {

@@ -1,5 +1,5 @@
 <template>
-  <header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30">
+  <header class="fixed top-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/30">
     <!-- Reading Progress Bar -->
     <div 
       class="absolute bottom-0 top-0 left-0 h-[2px] bg-primary transition-all duration-100"

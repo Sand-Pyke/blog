@@ -79,3 +79,154 @@ body {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* ========================================
+   Element Plus Dark Mode Overrides
+   ======================================== */
+html.dark {
+  /* Base colors - match MD3 dark theme */
+  --el-bg-color: var(--color-surface-container);
+  --el-bg-color-overlay: var(--color-surface-container-high);
+  --el-bg-color-page: var(--color-background);
+  
+  /* Text colors */
+  --el-text-color-primary: var(--color-on-surface);
+  --el-text-color-regular: var(--color-on-surface);
+  --el-text-color-secondary: var(--color-on-surface-variant);
+  --el-text-color-placeholder: var(--color-outline);
+  
+  /* Border colors */
+  --el-border-color: var(--color-outline-variant);
+  --el-border-color-light: var(--color-outline-variant);
+  --el-border-color-lighter: var(--color-outline-variant);
+  --el-border-color-extra-light: var(--color-outline-variant);
+  --el-border-color-dark: var(--color-outline);
+  
+  /* Fill colors */
+  --el-fill-color: var(--color-surface-container);
+  --el-fill-color-light: var(--color-surface-container-high);
+  --el-fill-color-lighter: var(--color-surface-container-high);
+  --el-fill-color-blank: var(--color-surface-container);
+  --el-fill-color-dark: var(--color-surface-container-high);
+  
+  /* Input specific */
+  --el-input-bg-color: var(--color-surface-container);
+  --el-input-text-color: var(--color-on-surface);
+  --el-input-border-color: var(--color-outline-variant);
+  --el-input-hover-border-color: var(--color-primary);
+  --el-input-focus-border-color: var(--color-primary);
+  --el-input-placeholder-color: var(--color-outline);
+  
+  /* Select specific */
+  --el-select-bg-color: var(--color-surface-container);
+  --el-select-input-focus-border-color: var(--color-primary);
+  
+  /* Disabled state */
+  --el-disabled-bg-color: var(--color-surface-container-high);
+  --el-disabled-text-color: var(--color-on-surface-variant);
+  --el-disabled-border-color: var(--color-outline-variant);
+  
+  /* Overlay / dropdown */
+  --el-popper-bg-color: var(--color-surface-container-high);
+  --el-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --el-box-shadow-light: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Select wrapper (the visible trigger) */
+html.dark .el-select__wrapper {
+  background-color: var(--color-surface-container) !important;
+  border: 1px solid var(--color-outline-variant) !important;
+  box-shadow: none !important;
+}
+
+html.dark .el-select__wrapper:hover {
+  border-color: var(--color-primary) !important;
+}
+
+html.dark .el-select__wrapper.is-focused {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 1px var(--color-primary) !important;
+}
+
+/* Selected value text */
+html.dark .el-select__placeholder,
+html.dark .el-select__selected-item {
+  color: var(--color-on-surface) !important;
+}
+
+/* Select dropdown (teleported to body) */
+html.dark .el-select-dropdown {
+  background-color: var(--color-surface-container-high) !important;
+  border: 1px solid var(--color-outline-variant) !important;
+}
+
+html.dark .el-select-dropdown__item {
+  color: var(--color-on-surface) !important;
+}
+
+html.dark .el-select-dropdown__item.hover,
+html.dark .el-select-dropdown__item:hover {
+  background-color: var(--color-surface-container) !important;
+}
+
+html.dark .el-select-dropdown__item.selected {
+  color: var(--color-primary) !important;
+  background-color: var(--color-primary-container) !important;
+}
+
+/* Textarea */
+html.dark .el-textarea__inner {
+  background-color: var(--color-surface-container) !important;
+  color: var(--color-on-surface) !important;
+  border: 1px solid var(--color-outline-variant) !important;
+  box-shadow: none !important;
+}
+
+html.dark .el-textarea__inner:hover {
+  border-color: var(--color-primary) !important;
+}
+
+html.dark .el-textarea__inner:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 1px var(--color-primary) !important;
+}
+
+html.dark .el-textarea__inner::placeholder {
+  color: var(--color-outline) !important;
+}
+
+/* Input (for non-textarea el-input) */
+html.dark .el-input__wrapper {
+  background-color: var(--color-surface-container) !important;
+  border: 1px solid var(--color-outline-variant) !important;
+  box-shadow: none !important;
+}
+
+html.dark .el-input__wrapper:hover {
+  border-color: var(--color-primary) !important;
+}
+
+html.dark .el-input__wrapper.is-focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 1px var(--color-primary) !important;
+}
+
+html.dark .el-input__inner {
+  color: var(--color-on-surface) !important;
+}
+
+html.dark .el-input__inner::placeholder {
+  color: var(--color-outline) !important;
+}
+
+/* Select suffix/caret icon */
+html.dark .el-select__caret {
+  color: var(--color-on-surface-variant) !important;
+}
+
+/* Tag (if used in multi-select) */
+html.dark .el-tag {
+  --el-tag-bg-color: var(--color-primary-container);
+  --el-tag-text-color: var(--color-on-primary-container);
+  --el-tag-border-color: var(--color-primary-fixed-dim);
+}

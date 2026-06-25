@@ -21,8 +21,10 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 静态文件服务 - 提供上传的图片
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// 静态文件服务 — 与 upload 路由使用相同的 UPLOAD_DIR
+const uploadDir = process.env.UPLOAD_DIR || 'uploads';
+const uploadsPath = path.resolve(process.cwd(), uploadDir);
+app.use('/uploads', express.static(uploadsPath));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/blog', blogRoutes);
