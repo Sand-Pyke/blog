@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # 启动后端服务
-CMD ["node", "src/index.js"]
+CMD ["node", "src/server.ts"]

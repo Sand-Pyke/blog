@@ -4,9 +4,9 @@ services:
     container_name: my-blog-db
     restart: always
     environment:
-      POSTGRES_USER: your_db_user      # 替换为实际值
-      POSTGRES_PASSWORD: your_db_pass
-      POSTGRES_DB: your_db_name
+      POSTGRES_USER: postgres      # 替换为实际值
+      POSTGRES_PASSWORD: 293617
+      POSTGRES_DB: blog_db
     volumes:
       - pg_data:/var/lib/postgresql/data
     ports:
@@ -27,9 +27,9 @@ services:
     environment:
       NODE_ENV: production
       DB_HOST: db
-      DB_USER: your_db_user
-      DB_PASSWORD: your_db_pass
-      DB_NAME: your_db_name
+      DB_USER: postgres
+      DB_PASSWORD: 293617
+      DB_NAME: blog_db
       DB_PORT: 5432
     ports:
       - "3000:3000"
