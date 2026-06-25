@@ -208,13 +208,11 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from "vue";
-import { useRoute } from "vue-router";
 import TopNavBar from "../components/TopNavBar.vue";
 import Footer from "../components/Footer.vue";
 import { api } from "../services/api";
-import type { BlogPost, BlogCategory } from "../types";
+import type { BlogPost } from "../types";
 
-const route = useRoute();
 const loading = ref(true);
 const error = ref("");
 const blogs = ref<BlogPost[]>([]);

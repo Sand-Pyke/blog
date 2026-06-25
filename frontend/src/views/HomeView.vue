@@ -100,7 +100,7 @@
                 class="font-label-xs text-primary font-bold uppercase tracking-wider mb-3 flex items-center gap-2"
               >
                 <span class="material-symbols-outlined text-sm">storage</span>
-                数据�?
+                数据库
               </h3>
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div
@@ -253,7 +253,7 @@
                   {{ selectedSkill.category }}
                 </span>
                 <span class="text-on-surface-variant text-sm">
-                  熟练�? {{ selectedSkill.level * 10 }}%
+                  熟练度 {{ selectedSkill.level * 10 }}%
                 </span>
               </div>
 
