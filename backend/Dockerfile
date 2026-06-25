@@ -25,6 +25,9 @@ RUN npm ci --only=production
 # 从构建阶段复制编译产物
 COPY --from=builder /app/dist ./dist
 
+# 复制 SQL 初始化文件到工作目录（server.ts 会自动读取）
+COPY init-database.sql ./
+
 # 暴露端口（根据实际端口修改）
 EXPOSE 3000
 
