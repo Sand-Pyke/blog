@@ -56,8 +56,7 @@ export interface UploadService {
   // 上传文件
   uploadFile(file: File): Promise<ApiResponse<{ url: string }>>;
 }
-
-// 统一的API客户端接�?export interface ApiClient {
+export interface ApiClient {
   blog: BlogService;
   daily: DailyService;
   user: UserService;

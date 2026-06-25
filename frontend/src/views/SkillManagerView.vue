@@ -85,7 +85,7 @@
             <div
               class="flex items-center justify-between text-sm text-on-surface-variant mb-1"
             >
-              <span>熟练�?/span>
+              <span>熟练度</span>
               <span>{{ skill.level * 10 }}%</span>
             </div>
             <div
@@ -124,7 +124,7 @@
       <button
         @click="openAddModal"
         class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg hover:bg-primary/90 active:scale-95 transition-all flex items-center justify-center z-50"
-        title="添加技�?
+        title="添加技能"
       >
         <span class="material-symbols-outlined text-2xl">add</span>
       </button>
@@ -142,7 +142,7 @@
             >
               <div class="flex items-center justify-between mb-6">
                 <h2 class="font-headline-md text-headline-md text-on-surface">
-                  {{ editingSkill ? "编辑技�? : "添加技�? }}
+                  {{ editingSkill ? "编辑技能" : "添加技能" }}
                 </h2>
                 <button
                   @click="closeModal"
@@ -157,7 +157,7 @@
                   <label
                     class="block font-label-xs text-primary font-bold uppercase tracking-wider mb-2"
                   >
-                    技能名�?
+                    技能名称
                   </label>
                   <input
                     v-model="formData.name"
@@ -181,7 +181,7 @@
                   >
                     <el-option label="前端" value="Frontend" />
                     <el-option label="后端" value="Backend" />
-                    <el-option label="数据�? value="Database" />
+                    <el-option label="数据库" value="Database" />
                     <el-option label="DevOps" value="DevOps" />
                     <el-option label="编程语言" value="Language" />
                   </el-select>
@@ -242,7 +242,7 @@
                   <label
                     class="block font-label-xs text-primary font-bold uppercase tracking-wider mb-2"
                   >
-                    熟练�? {{ formData.level * 10 }}%
+                    熟练度: {{ formData.level * 10 }}%
                   </label>
                   <input
                     v-model.number="formData.level"
@@ -263,7 +263,7 @@
                   <label
                     class="block font-label-xs text-primary font-bold uppercase tracking-wider mb-2"
                   >
-                    技术要点描�?
+                    技术要点描述
                   </label>
                   <el-input
                     v-model="formData.description"
@@ -286,7 +286,7 @@
                     :disabled="isSaving"
                     class="flex-1 py-3 bg-primary text-on-primary font-body-md rounded-lg hover:bg-primary/90 transition-all disabled:opacity-50"
                   >
-                    {{ isSaving ? "保存�?.." : "保存" }}
+                    {{ isSaving ? "保存�?.." : "保存" }}
                   </button>
                 </div>
               </form>
@@ -295,12 +295,11 @@
         </transition>
       </Teleport>
 
-      <!-- 删除确认对话�?-->
       <DeleteConfirm
         v-model:visible="showDeleteConfirm"
         title="确认删除"
-        message="确定要删除这个技能吗�?
-        sub-message="此操作无法撤销，请谨慎操作�?
+        message="确定要删除这个技能吗�?
+        sub-message="此操作无法撤销，请谨慎操作�?
         confirm-text="删除"
         :loading="isDeleting"
         @confirm="handleDeleteConfirm"
@@ -323,7 +322,6 @@ const isSaving = ref(false);
 const isLoading = ref(true);
 const skillsError = ref("");
 
-// 删除确认对话框状�?
 const showDeleteConfirm = ref(false);
 const isLocked = useScrollLock(document.documentElement);
 watch(showDeleteConfirm, (val) => {
@@ -379,10 +377,10 @@ const fetchSkills = async () => {
     if (response.ok) {
       skills.value = await response.json();
     } else {
-      skillsError.value = "加载技能列表失�?;
+      skillsError.value = "加载技能列表失败";
     }
   } catch (error: any) {
-        skillsError.value = error.message || "网络连接失败，请检查网络设�?;
+        skillsError.value = error.message || "网络连接失败，请检查网络设置";
   } finally {
     isLoading.value = false;
   }

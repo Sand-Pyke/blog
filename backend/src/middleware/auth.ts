@@ -33,8 +33,3 @@ export const generateToken = (payload: TokenPayload): string => {
   } as jwt.SignOptions);
 };
 
-export const generateToken = (payload: TokenPayload): string => {
-  return jwt.sign(payload, process.env.JWT_SECRET as string, {
-    expiresIn: '7d',
-  } as jwt.SignOptions);
-};

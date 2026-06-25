@@ -1,117 +1,120 @@
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { defineStore } from "pinia";
+import { ref, computed } from "vue";
 
 interface User {
-  id: number
-  username: string
-  email: string
-  role: string
+  id: number;
+  username: string;
+  email: string;
+  role: string;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api'
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
-export const useAuthStore = defineStore('auth', () => {
-  const token = ref<string | null>(localStorage.getItem('token'))
-  const user = ref<User | null>(null)
-  const isLoading = ref(false)
+export const useAuthStore = defineStore("auth", () => {
+  const token = ref<string | null>(localStorage.getItem("token"));
+  const user = ref<User | null>(null);
+  const isLoading = ref(false);
 
-  const isAuthenticated = computed(() => !!token.value && !!user.value)
+  const isAuthenticated = computed(() => !!token.value && !!user.value);
 
   const setToken = (newToken: string) => {
-    token.value = newToken
-    localStorage.setItem('token', newToken)
-  }
+    token.value = newToken;
+    localStorage.setItem("token", newToken);
+  };
 
   const setUser = (userData: User) => {
-    user.value = userData
-    localStorage.setItem('user', JSON.stringify(userData))
-  }
+    user.value = userData;
+    localStorage.setItem("user", JSON.stringify(userData));
+  };
 
   const logout = () => {
-    token.value = null
-    user.value = null
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    localStorage.removeItem('remember')
-  }
+    token.value = null;
+    user.value = null;
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("remember");
+  };
 
-  const login = async (params: { email: string; password: string }): Promise<boolean> => {
-    isLoading.value = true
+  const login = async (params: {
+    email: string;
+    password: string;
+  }): Promise<boolean> => {
+    isLoading.value = true;
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: params.email, password: params.password })
-      })
+        body: JSON.stringify({
+          email: params.email,
+          password: params.password,
+        }),
+      });
 
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.message || '登录失败')
+        const error = await response.json();
+        throw new Error(error.message || "登录失败");
       }
-      const data = await response.json()
+      const data = await response.json();
       if (data.token) {
-        setToken(data.token)
-        setUser(data.user)
-        return true
+        setToken(data.token);
+        setUser(data.user);
+        return true;
       }
-      return false
+      return false;
     } catch (error: any) {
-            throw error
+      throw error;
     } finally {
-      isLoading.value = false
+      isLoading.value = false;
     }
-  }
+  };
 
   const fetchUserInfo = async (): Promise<boolean> => {
-    if (!token.value) return false
+    if (!token.value) return false;
     try {
       const response = await fetch(`${API_BASE_URL}/auth/me`, {
         headers: {
-          'Authorization': `Bearer ${token.value}`
-        }
-      })
+          Authorization: `Bearer ${token.value}`,
+        },
+      });
 
       if (!response.ok) {
-        // 接口不可用时不强退，保�?token
         if (response.status === 401 || response.status === 403) {
-          logout()
+          logout();
         }
-        return false
+        return false;
       }
 
-      const data = await response.json()
+      const data = await response.json();
       if (data?.user) {
-        setUser(data.user)
+        setUser(data.user);
       } else if (data?.id) {
         // 某些后端直接返回 user 对象而非 { user: ... }
-        setUser(data)
+        setUser(data);
       }
-      return true
+      return true;
     } catch (error) {
-      // 网络错误不强退，保�?token �?user
-            return false
+      return false;
     }
-  }
+  };
 
   // Initialize user from localStorage
   const initAuth = async () => {
-    const storedUser = localStorage.getItem('user')
+    const storedUser = localStorage.getItem("user");
     if (storedUser && token.value) {
       try {
-        if (storedUser !== 'undefined' && storedUser !== 'null') {
-          user.value = JSON.parse(storedUser)
+        if (storedUser !== "undefined" && storedUser !== "null") {
+          user.value = JSON.parse(storedUser);
         }
         // 尝试验证 token 是否有效（失败不清理状态）
-        await fetchUserInfo()
+        await fetchUserInfo();
       } catch (error) {
-        // 解析失败只清�?user，保�?token
-                localStorage.removeItem('user')
-        user.value = null
+        localStorage.removeItem("user");
+        user.value = null;
       }
     }
-  }
+  };
 
   return {
     token,
@@ -123,6 +126,6 @@ export const useAuthStore = defineStore('auth', () => {
     fetchUserInfo,
     initAuth,
     setToken,
-    setUser
-  }
-})
+    setUser,
+  };
+});

@@ -91,7 +91,7 @@
       <div v-if="hasMore && !loading" class="mt-stack-xl flex justify-center">
         <button @click="handleLoadMore" :disabled="loadingMore"
           class="group relative px-8 py-3 bg-primary text-on-primary font-semibold transition-all hover:bg-primary/90 active:scale-95 disabled:opacity-50">
-          <span v-if="loadingMore">加载�?..</span>
+          <span v-if="loadingMore">加载�?..</span>
           <span v-else>
             加载更多历史记录
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all group-hover:w-full"></span>
@@ -133,7 +133,7 @@
                 <button v-if="authStore.isAuthenticated" @click.stop="handleDelete" :disabled="isDeleting"
                   class="px-3 py-1.5 text-label-xs font-label-xs text-error border border-error/50 rounded-lg hover:bg-error/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1">
                   <span class="material-symbols-outlined text-[16px]">delete</span>
-                  <span>{{ isDeleting ? '删除�?..' : '删除' }}</span>
+                  <span>{{ isDeleting ? '删除�?..' : '删除' }}</span>
                 </button>
               </div>
 
@@ -151,7 +151,7 @@
               <!-- Images -->
               <div v-if="selectedEntry.images && selectedEntry.images.length > 0" class="space-y-2">
                 <img v-for="(image, imgIndex) in selectedEntry.images" :key="imgIndex" :src="image"
-                  :alt="`Image ${imgIndex + 1}`" class="w-full rounded-lg" />
+                  :alt="`Image ${Number(imgIndex) + 1}`" class="w-full rounded-lg" />
               </div>
 
               <!-- Code Snippet -->
@@ -173,7 +173,7 @@
     </Teleport>
 
     <!-- Delete Confirm Dialog -->
-    <DeleteConfirm v-model:visible="showDeleteConfirm" title="删除确认" message="确定要删除这条日常分享吗�? sub-message="此操作不可恢�?
+    <DeleteConfirm v-model:visible="showDeleteConfirm" title="删除确认" message="确定要删除这条日常分享吗�? sub-message="此操作不可恢�?
       confirm-text="删除" :loading="isDeleting" @confirm="handleDeleteConfirm" @cancel="handleDeleteCancel" />
 
     <Footer />
@@ -206,7 +206,7 @@ const showDialog = ref(false);
 const isDeleting = ref(false);
 const showDeleteConfirm = ref(false);
 
-// 详情弹窗和删除确认弹窗都关闭时才恢复滚动�?const isLocked = useScrollLock(document.documentElement);
+const isLocked = useScrollLock(document.documentElement);
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 const availableTags = ref<string[]>([]);
@@ -231,28 +231,23 @@ const fetchDailies = async (append = false) => {
 
     const page = append ? currentPage.value + 1 : 1;
     const response = await api.getDailies({ page, limit: 10 });
-    // 后端返回的是数组，不�?{ dailies: [] } 对象
     const dailiesData = Array.isArray(response) ? response : response.dailies || [];
 
     const mappedEntries: DailyEntry[] = dailiesData.map((daily: any) => {
-      // 解析 metadata
       let metadata: any = {};
       if (daily.metadata) {
         try {
           metadata = typeof daily.metadata === 'string' ? JSON.parse(daily.metadata) : daily.metadata;
-        } catch (e) {
-                  }
+        } catch (e) {}
       }
 
-      // 解析 tags - 支持多种格式
-      let tags: string[] = [];
+      let tags: any[] = [];
       if (metadata.tags) {
         if (typeof metadata.tags === 'string') {
-          try { tags = JSON.parse(metadata.tags); } catch { tags = [metadata.tags]; }
+          try { tags = JSON.parse(metadata.tags); } catch { tags = []; }
         } else if (Array.isArray(metadata.tags)) {
-          // 过滤�?availableTags 中存在的标签
           const tagsArr = metadata.tags;
-                    tags = availableTags.value.filter((tag: any) => tagsArr.includes(tag.id));
+          tags = availableTags.value.filter((tag: any) => tagsArr.includes(tag.id));
         }
       } 
 
@@ -278,12 +273,12 @@ const fetchDailies = async (append = false) => {
       dailyEntries.value = mappedEntries;
     }
 
-    totalPages.value = 1; // 后端暂时没有分页信息
+    totalPages.value = 1;
     currentPage.value = page;
-    hasMore.value = false; // 暂时没有更多数据
+    hasMore.value = false;
   } catch (err: any) {
     error.value = err.message || '加载失败';
-      } finally {
+  } finally {
     loading.value = false;
     loadingMore.value = false;
   }

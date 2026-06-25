@@ -27,7 +27,7 @@
               <button @click="editor?.chain().focus().toggleStrike().run()"
                 :disabled="!editor?.can().chain().focus().toggleStrike().run()"
                 :class="{ 'bg-surface-container': editor?.isActive('strike') }"
-                class="p-2 rounded-lg hover:bg-surface-container transition-colors disabled:opacity-50" title="删除�?>
+                class="p-2 rounded-lg hover:bg-surface-container transition-colors disabled:opacity-50" title="删除线">
                 <span class="material-symbols-outlined">strikethrough_s</span>
               </button>
               <button @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()"
@@ -42,7 +42,7 @@
               </button>
               <button @click="editor?.chain().focus().toggleCodeBlock().run()"
                 :class="{ 'bg-surface-container-low': editor?.isActive('codeBlock') }"
-                class="p-2 rounded hover:bg-surface-container-low transition-colors" title="代码�?>
+                class="p-2 rounded hover:bg-surface-container-low transition-colors" title="代码块">
                 <span class="material-symbols-outlined">code</span>
               </button>
               <button @click="setLink" :class="{ 'bg-surface-container-low': editor?.isActive('link') }"
@@ -57,7 +57,7 @@
               </button>
               <input type="file" ref="imageInput" @change="handleImageUpload" accept="image/*" class="hidden" />
               <button @click="editor?.chain().focus()?.setHorizontalRule().run()"
-                class="p-2 rounded hover:bg-surface-container-low transition-colors" title="分割�?>
+                class="p-2 rounded hover:bg-surface-container-low transition-colors" title="分割线">
                 <span class="material-symbols-outlined">horizontal_rule</span>
               </button>
               <button @click="editor?.chain().focus().undo().run()"
@@ -75,7 +75,7 @@
             <div class="flex items-center gap-2 px-3 text-on-surface-variant font-label-xs">
               <span v-if="isUploadingImage" class="flex items-center gap-1">
                 <span class="material-symbols-outlined text-[18px] animate-spin">sync</span>
-                <span>上传�?..</span>
+                <span>上传�?..</span>
               </span>
             </div>
           </div>
@@ -98,11 +98,11 @@
         <div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/20 p-4">
           <div class="flex flex-col gap-stack-sm mb-4">
             <h3 class="font-headline-md text-headline-md text-on-surface">发布设置</h3>
-            <p class="text-on-surface-variant font-label-xs">管理文章的分类与可见�?/p>
+            <p class="text-on-surface-variant font-label-xs">管理文章的分类与可见性</p>
           </div>
 
           <div class="flex flex-col gap-3 mb-4">
-            <label class="font-label-xs text-primary font-bold uppercase tracking-wider">发布�?/label>
+            <label class="font-label-xs text-primary font-bold uppercase tracking-wider">发布类型</label>
             <div class="flex gap-2">
               <button @click="postType = 'blog'" :class="[
                 'flex-1 py-3 rounded-lg font-body-md transition-all border',
@@ -186,7 +186,7 @@
             <button @click="publishPost" :disabled="isPublishing || !isValidPost"
               class="w-full py-4 bg-primary text-on-primary font-headline-md rounded-xl hover:bg-primary/90 transition-all active:scale-[0.98] shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
               <span v-if="isPublishing" class="flex items-center gap-2">
-                发布�?..
+                发布�?..
                 <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor"
@@ -226,7 +226,7 @@ const authStore = useAuthStore();
 
 const title = ref('');
 const postType = ref<'blog' | 'daily'>('blog');
-const categoryId = ref('');
+const categoryId = ref<any>('');
 const dailyType = ref<'text' | 'image' | 'code' | 'book'>('text');
 const tagIds = ref<string[]>([]);
 const showTagSelector = ref(false);
@@ -236,7 +236,7 @@ const successMessage = ref('');
 const imageInput = ref<HTMLInputElement | null>(null);
 const isUploadingImage = ref(false);
 
-const categories = ref<{ id: string; name: string; slug: string }[]>([]);
+const categories = ref<any[]>([]);
 const availableTags = ref<{ id: string; name: string; slug: string }[]>([]);
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
@@ -246,10 +246,10 @@ const editor = useEditor({
   content: '',
   extensions: [
     StarterKit.configure({
-      codeBlock: false, // 禁用默认�?code block，使�?lowlight 版本
+      codeBlock: false, // 禁用默认�?code block，使�?lowlight 版本
     }),
     Placeholder.configure({
-      placeholder: '开始你的创�?.. 支持 Markdown 语法�?,
+      placeholder: '开始你的创作.. 支持 Markdown 语法',
     }),
     Link.configure({
       openOnClick: false,
@@ -282,13 +282,9 @@ const editor = useEditor({
   },
 });
 
-const userInitials = computed(() => {
-  const username = authStore.user?.username || 'U';
-  return username.substring(0, 2).toUpperCase();
-});
 
 const isValidPost = computed(() => {
-  if (!title.value.trim().length > 0) return false;
+  if (Number(title.value.trim().length) > 0) return false;
   if (!editor.value) return false;
 
   // 检查是否有内容（包括图片）
@@ -306,7 +302,11 @@ const fetchCategories = async () => {
     if (response.ok) {
       categories.value = await response.json();
       if (categories.value.length > 0 && !categoryId.value) {
-        categoryId.value = categories.value[0].id;
+        if (Array.isArray(categories.value) && categories.value.length > 0 && categories.value[0] && categories.value[0].id !== undefined) {
+          categoryId.value = categories.value[0].id;
+        } else {
+          categoryId.value = null;
+        }
       }
     }
   } catch (error) {
@@ -376,11 +376,11 @@ const handleImageUpload = async (event: Event) => {
     const formData = new FormData();
     formData.append('image', file);
 
-    // 创建超时控制�?
+    // 创建超时控制�?
     const timeoutController = new AbortController();
     const timeoutId = setTimeout(() => {
       timeoutController.abort();
-    }, 10000); // 10秒超�?
+    }, 10000); // 10秒超�?
 
     const response = await fetch(`${API_BASE_URL}/upload/image`, {
       method: 'POST',
@@ -494,7 +494,7 @@ const publishPost = async () => {
         throw new Error(data.error || data.details || '发布失败');
       }
 
-      successMessage.value = '文章发布成功�?;
+      successMessage.value = '文章发布成功';
 
       // Clear editor and navigate to home
       setTimeout(() => {
@@ -530,7 +530,7 @@ const publishPost = async () => {
         throw new Error(data.error || '发布失败');
       }
 
-      successMessage.value = '日常分享发布成功�?;
+      successMessage.value = '日常分享发布成功';
 
       // Clear editor and navigate to daily page
       setTimeout(() => {

@@ -40,7 +40,7 @@
             <button v-if="authStore.isAuthenticated" @click="handleDelete" :disabled="isDeleting"
               class="px-3 py-1.5 text-label-xs font-label-xs text-error border border-error/50 rounded-lg hover:bg-error/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1">
               <span class="material-symbols-outlined text-[16px]">delete</span>
-              <span>{{ isDeleting ? '删除�?..' : '删除' }}</span>
+              <span>{{ isDeleting ? '删除�?..' : '删除' }}</span>
             </button>
           </div>
 
@@ -52,7 +52,7 @@
             <span class="w-1 h-1 bg-outline-variant rounded-full"></span>
             <span>阅读时长 {{ post.readingTime }} 分钟</span>
             <span class="w-1 h-1 bg-outline-variant rounded-full"></span>
-            <span>{{ post.views }} 次阅�?/span>
+            <span>{{ post.views }} 次阅读</span>
           </div>
         </header>
 
@@ -63,7 +63,7 @@
             <img :src="post.coverImage" :alt="post.title" class="w-full h-full object-cover" />
           </div>
           <figcaption class="mt-stack-sm text-center text-on-surface-variant font-label-xs italic opacity-70">
-            �?1：{{ post.title }}
+            �?1：{{ post.title }}
           </figcaption>
         </figure>
         <!-- Article Content -->
@@ -98,7 +98,7 @@
     </main>
 
     <!-- Delete Confirm Dialog -->
-    <DeleteConfirm v-model:visible="showDeleteConfirm" title="删除确认" message="确定要删除这篇文章吗�? sub-message="此操作不可恢�?
+    <DeleteConfirm v-model:visible="showDeleteConfirm" title="删除确认" message="确定要删除这篇文章吗�? sub-message="此操作不可恢�?
       confirm-text="删除" :loading="isDeleting" @confirm="handleDeleteConfirm" @cancel="handleDeleteCancel" />
 
     <Footer />
@@ -188,8 +188,8 @@ const fetchBlog = async () => {
     // Fetch related posts
     await fetchRelatedPosts();
   } catch (err: any) {
-    error.value = err.message || '文章不存�?;
-      } finally {
+    error.value = err.message || '文章不存在';
+  } finally {
     loading.value = false;
   }
 };
@@ -208,7 +208,7 @@ const fetchRelatedPosts = async () => {
         slug: blog.slug || '',
         excerpt: blog.excerpt || '',
         content: blog.content || '',
-        // �?content 中提取图�?src
+        // �?content 中提取图�?src
         coverImage: blog.content?.match(/<img[^>]+src=["']([^"']+)["']/)?.[1] || '',
         author: blog.author || {},
         category: blog.category ? {

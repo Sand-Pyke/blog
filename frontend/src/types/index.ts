@@ -54,7 +54,7 @@ export interface BlogPost extends BaseEntity {
 export interface DailyEntry extends BaseEntity {
   content: string;
   images?: string[];
-  tags: string[];
+  tags: any;
   date: string;
   mood?: string;
   location?: string;
@@ -62,7 +62,7 @@ export interface DailyEntry extends BaseEntity {
   bookCover?: string;
 }
 
-// 技能卡�?
+// 技能卡�?
 export interface Skill {
   id: string;
   name: string;
@@ -113,7 +113,7 @@ export interface DailyEntryQuery extends PaginationParams {
   endDate?: string;
 }
 
-// 文章编辑器数�?
+// 文章编辑器数�?
 export interface EditorData {
   id?: string;
   title: string;
@@ -126,7 +126,7 @@ export interface EditorData {
   publishedAt?: string;
 }
 
-// 导航菜单�?
+// 导航菜单�?
 export interface NavItem {
   label: string;
   path: string;

@@ -41,8 +41,8 @@ const categoryClass = computed(() => {
     'Design': 'bg-tertiary-fixed/30 text-on-tertiary-fixed-variant',
     'Frontend': 'bg-secondary-fixed-dim bg-secondary-container/50',
     'Daily': 'bg-secondary-fixed-dim bg-secondary-container/50',
-    '技术分�?: 'bg-surface-container-high text-on-surface-variant',
-    '前端技�?: 'bg-secondary-container/50 text-on-secondary-container',
+    '技术分享': 'bg-surface-container-high text-on-surface-variant',
+    '前端技术': 'bg-secondary-container/50 text-on-secondary-container',
     '日常分享': 'bg-secondary-fixed-dim bg-secondary-container/50'
   };
   
