@@ -133,7 +133,7 @@ class ApiService {
     })
   }
 
-  // ============ 技�?API ============
+  // ============ 技能 API ============
   async getSkills() {
     return this.request<{ skills: any[] }>('/skills')
   }
