@@ -60,6 +60,7 @@ export interface DailyEntry extends BaseEntity {
   location?: string;
   codeSnippet?: string;
   bookCover?: string;
+  title?: string;
 }
 
 // 技能卡�?

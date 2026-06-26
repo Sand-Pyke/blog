@@ -80,7 +80,13 @@
             </div>
           </div>
 
-          <!-- Title Input -->
+          <!-- Status Messages -->
+          <div v-if="successMessage || errorMessage"
+            class="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-body-sm"
+            :class="successMessage ? 'bg-success-container text-on-success-container' : 'bg-error-container text-on-error-container'">
+            <span class="material-symbols-outlined text-[18px]">{{ successMessage ? 'check_circle' : 'error' }}</span>
+            <span>{{ successMessage || errorMessage }}</span>
+          </div>
           <input v-model="title"
             class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-3 font-headline-md text-headline-md placeholder:text-outline-variant outline-none focus:border-primary transition-colors shadow-sm"
             placeholder="在此输入文章标题..." type="text" />
@@ -310,15 +316,6 @@ const handleImageUpload = async (event: Event) => {
   }
 };
 
-// Generate slug from title
-const generateSlug = (text: string) => {
-  return text
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w\-\u4e00-\u9fa5]/g, '') // 支持中文
-    .substring(0, 50);
-};
-
 // Publish post
 const publishPost = async () => {
   if (!isValidPost.value) {
@@ -343,8 +340,6 @@ const publishPost = async () => {
 
     if (postType.value === 'blog') {
       // Publish to blog
-      const slugValue = generateSlug(title.value) || `post-${Date.now()}`;
-
       const response = await fetch(`${API_BASE_URL}/blog/posts`, {
         method: 'POST',
         headers: {
@@ -353,7 +348,6 @@ const publishPost = async () => {
         },
         body: JSON.stringify({
           title: title.value,
-          slug: slugValue,
           content,
           excerpt: text,
           status: 'published'

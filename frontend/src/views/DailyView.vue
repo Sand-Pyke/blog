@@ -49,20 +49,17 @@
               <time class="font-label-xs text-label-xs text-primary uppercase tracking-wider block mb-1">
                 {{ formatDate(entry.date) }}
               </time>
-              <span v-for="(tag, tagIndex) in entry.tags" :key="tagIndex"
-                class="inline-block px-2 py-1 bg-surface-container rounded-lg text-[10px] font-code-sm text-on-surface-variant mb-2">
-                #{{ tag.name }}
-              </span>
             </div>
 
             <div :class="index % 2 === 0 ? '' : 'md:row-start-1 md:text-right'" @click="handleCardClick(entry)"
               class="bg-surface-container-lowest rounded-xl p-stack-md border border-outline-variant/20 transition-all hover:border-outline-variant hover:shadow-sm cursor-pointer">
+              <h3 class="font-bold text-lg mb-2">{{ entry.title }}</h3>
               <div class="text-on-surface mb-4 prose prose-sm max-w-none" v-html="entry.content"></div>
 
               <!-- Image if available -->
               <div v-if="entry.images && entry.images.length > 0"
                 class="aspect-video w-full overflow-hidden rounded-lg mb-4">
-                <img :src="entry.images[0]" :alt="entry.content" class="w-full h-full object-cover" />
+                <el-image :src="entry.images[0]" :alt="entry.content" fit="cover" :preview-src-list="entry.images" />
               </div>
 
               <!-- Code snippet if available -->
@@ -74,7 +71,8 @@
               <!-- Book cover if available -->
               <div v-if="entry.bookCover" class="flex md:justify-end gap-2">
                 <div class="w-16 h-20 bg-outline-variant rounded shadow-sm overflow-hidden">
-                  <img :src="entry.bookCover" :alt="entry.content" class="w-full h-full object-cover" />
+                  <el-image :src="entry.bookCover" :alt="entry.content" fit="cover"
+                    :preview-src-list="[entry.bookCover]" />
                 </div>
               </div>
             </div>
@@ -150,8 +148,9 @@
 
               <!-- Images -->
               <div v-if="selectedEntry.images && selectedEntry.images.length > 0" class="space-y-2">
-                <img v-for="(image, imgIndex) in selectedEntry.images" :key="imgIndex" :src="image"
-                  :alt="`Image ${Number(imgIndex) + 1}`" class="w-full rounded-lg" />
+                <el-image v-for="(image, imgIndex) in selectedEntry.images" :key="imgIndex" :src="image"
+                  :alt="`Image ${Number(imgIndex) + 1}`" fit="contain" class="w-full rounded-lg"
+                  :preview-src-list="selectedEntry.images" />
               </div>
 
               <!-- Code Snippet -->
@@ -163,7 +162,8 @@
               <!-- Book Cover -->
               <div v-if="selectedEntry.bookCover" class="flex items-center gap-3">
                 <div class="w-16 h-20 bg-outline-variant rounded shadow-sm overflow-hidden">
-                  <img :src="selectedEntry.bookCover" :alt="selectedEntry.content" class="w-full h-full object-cover" />
+                  <el-image :src="selectedEntry.bookCover" :alt="selectedEntry.content" fit="cover"
+                    :preview-src-list="[selectedEntry.bookCover]" />
                 </div>
               </div>
             </div>
@@ -237,7 +237,7 @@ const fetchDailies = async (append = false) => {
       if (daily.metadata) {
         try {
           metadata = typeof daily.metadata === 'string' ? JSON.parse(daily.metadata) : daily.metadata;
-        } catch (e) {}
+        } catch (e) { }
       }
 
       let tags: any[] = [];
@@ -248,7 +248,7 @@ const fetchDailies = async (append = false) => {
           const tagsArr = metadata.tags;
           tags = availableTags.value.filter((tag: any) => tagsArr.includes(tag.id));
         }
-      } 
+      }
 
       return {
         id: daily.id?.toString() || '',
@@ -283,15 +283,6 @@ const fetchDailies = async (append = false) => {
   }
 };
 
-const fetchTags = async () => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/blog/tags`);
-    if (response.ok) {
-      availableTags.value = await response.json();
-    }
-  } catch (error) {
-      }
-};
 
 const loadMore = () => {
   if (hasMore.value && !loadingMore.value) {
@@ -308,7 +299,7 @@ const handleRetry = () => {
 };
 
 const handleCardClick = (entry: any) => {
-    selectedEntry.value = entry;
+  selectedEntry.value = entry;
   showDialog.value = true;
 };
 
@@ -337,7 +328,7 @@ const handleDeleteConfirm = async () => {
     showDeleteConfirm.value = false;
     closeDialog();
   } catch (err: any) {
-        ElMessage.error('删除失败，请重试');
+    ElMessage.error('删除失败，请重试');
   } finally {
     isDeleting.value = false;
   }
@@ -353,7 +344,9 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: '2-digit',
-    day: '2-digit'
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
   }).replace(/\//g, '.');
 };
 
@@ -361,7 +354,6 @@ onMounted(() => {
   checkWidth();
   window.addEventListener('resize', checkWidth);
   fetchDailies();
-  fetchTags();
 });
 
 onUnmounted(() => {

@@ -1,10 +1,11 @@
 <template>
   <div class="bg-surface-container-lowest p-stack-md rounded-xl border border-outline-variant/30 hover:border-primary/30 transition-all group flex items-center gap-3">
     <!-- SVG 图标 -->
-    <img 
+    <el-image 
       v-if="skill.icon && skill.icon.endsWith('.svg')"
       :src="iconUrl"
       :alt="skill.name"
+      fit="contain"
       class="h-8 w-8 object-contain transition-transform group-hover:scale-110 shrink-0"
     />
     <!-- Material Symbols 图标 -->

@@ -23,28 +23,23 @@
       <div
         class="absolute inset-0 bg-primary-container rounded-full opacity-10 group-hover:scale-105 transition-transform duration-500">
       </div>
-      <img :src="user.avatar" :alt="user.name"
-        class="w-full h-full object-cover rounded-full border-4 border-surface shadow-xl relative z-10" />
+      <el-image :src="user.avatar" :alt="user.name" fit="cover" :preview-src-list="[user.avatar]"
+        class="w-full h-full rounded-full border-4 border-surface shadow-xl relative z-10" />
     </div>
   </section>
 
   <!-- Portfolio Dialog -->
   <Teleport to="body">
     <transition name="dialog">
-      <div 
-        v-if="showPortfolioDialog" 
-        class="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4"
-        @click.self="showPortfolioDialog = false"
-      >
+      <div v-if="showPortfolioDialog" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4"
+        @click.self="showPortfolioDialog = false">
         <div class="bg-surface-container-lowest rounded-2xl w-full max-w-md p-6">
           <div class="flex items-center justify-between mb-6">
             <h2 class="font-headline-md text-headline-md text-on-surface">
               查看作品
             </h2>
-            <button 
-              @click="showPortfolioDialog = false"
-              class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg"
-            >
+            <button @click="showPortfolioDialog = false"
+              class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg">
               <span class="material-symbols-outlined">close</span>
             </button>
           </div>
@@ -60,16 +55,12 @@
           </div>
 
           <div class="flex gap-3">
-            <button 
-              @click="showPortfolioDialog = false"
-              class="flex-1 py-3 border border-outline text-on-surface-variant font-body-md rounded-lg hover:bg-surface-container-high transition-all"
-            >
+            <button @click="showPortfolioDialog = false"
+              class="flex-1 py-3 border border-outline text-on-surface-variant font-body-md rounded-lg hover:bg-surface-container-high transition-all">
               取消
             </button>
-            <button 
-              @click="goToGithub"
-              class="flex-1 py-3 bg-primary text-on-primary font-body-md rounded-lg hover:bg-primary/90 transition-all"
-            >
+            <button @click="goToGithub"
+              class="flex-1 py-3 bg-primary text-on-primary font-body-md rounded-lg hover:bg-primary/90 transition-all">
               确认
             </button>
           </div>

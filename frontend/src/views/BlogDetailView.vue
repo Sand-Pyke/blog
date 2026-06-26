@@ -92,11 +92,7 @@
           <div
             class="relative w-full aspect-video rounded-xl overflow-hidden shadow-sm border border-outline-variant/20"
           >
-            <img
-              :src="post.coverImage"
-              :alt="post.title"
-              class="w-full h-full object-cover"
-            />
+            <el-image :src="post.coverImage" :alt="post.title" fit="cover" :preview-src-list="[post.coverImage]" />
           </div>
           <figcaption
             class="mt-stack-sm text-center text-on-surface-variant font-label-xs italic opacity-70"
@@ -316,6 +312,8 @@ const formatDate = (dateString: string) => {
     year: "numeric",
     month: "long",
     day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 };
 

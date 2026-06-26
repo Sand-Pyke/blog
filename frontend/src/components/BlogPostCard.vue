@@ -56,7 +56,9 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   });
 };
 </script>

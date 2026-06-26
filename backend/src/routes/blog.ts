@@ -50,19 +50,19 @@ router.get('/posts/:slug', async (req, res) => {
 
 router.post('/posts', authenticateToken, async (req, res) => {
   try {
-    const { title, slug, content, excerpt, status, published_at } = req.body;
+    const { title, content, excerpt, status, published_at } = req.body;
 
-    if (!title || !slug || !content) {
-      return res.status(400).json({ error: 'Title, slug, and content are required' });
+    if (!title || !content) {
+      return res.status(400).json({ error: 'Title and content are required' });
     }
 
     const post = await createBlogPost({
       title,
-      slug,
+      slug: title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-\u4e00-\u9fa5]/g, '').substring(0, 50),
       content,
       excerpt: excerpt || content.substring(0, 200),
       author_id: req.user!.userId,
-      status: status || 'draft',
+      status: status || 'published',
       published_at: status === 'published' ? (published_at || new Date()) : null,
     });
 
@@ -93,7 +93,7 @@ router.put('/posts/:id', authenticateToken, async (req, res) => {
 
     res.json(post);
   } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -108,7 +108,7 @@ router.delete('/posts/:id', authenticateToken, async (req, res) => {
 
     res.json({ message: 'Post deleted successfully' });
   } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

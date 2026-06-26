@@ -1,20 +1,13 @@
 <template>
   <div
-    class="font-body-md text-body-md antialiased bg-gradient-to-b from-surface-container-low to-surface min-h-screen"
-  >
+    class="font-body-md text-body-md antialiased bg-gradient-to-b from-surface-container-low to-surface min-h-screen">
     <TopNavBar />
 
-    <main
-      class="pt-24 pb-stack-xl max-w-container-max mx-auto px-gutter md:px-0"
-    >
+    <main class="pt-24 pb-stack-xl max-w-container-max mx-auto px-gutter md:px-0">
       <!-- Page Header -->
       <section class="mb-stack-lg">
-        <div
-          class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/20 p-6 md:p-8"
-        >
-          <h1
-            class="font-display-lg text-display-lg-mobile md:text-display-xl mb-stack-sm"
-          >
+        <div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/20 p-6 md:p-8">
+          <h1 class="font-display-lg text-display-lg-mobile md:text-display-xl mb-stack-sm">
             Code Review
           </h1>
         </div>
@@ -22,11 +15,8 @@
 
       <!-- Loading State -->
       <div v-if="loading" class="space-y-stack-lg">
-        <div
-          v-for="i in 5"
-          :key="i"
-          class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/20 p-6 animate-pulse"
-        >
+        <div v-for="i in 5" :key="i"
+          class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/20 p-6 animate-pulse">
           <div class="grid grid-cols-1 md:grid-cols-[1fr_240px] gap-gutter">
             <div class="order-2 md:order-1">
               <div class="h-4 w-20 bg-surface-container rounded mb-2"></div>
@@ -36,91 +26,55 @@
               <div class="h-4 w-1/2 bg-surface-container rounded"></div>
             </div>
             <div class="order-1 md:order-2">
-              <div
-                class="w-full aspect-video rounded bg-surface-container"
-              ></div>
+              <div class="w-full aspect-video rounded bg-surface-container"></div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Error State -->
-      <div
-        v-else-if="error"
-        class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/20 p-6 text-center py-12"
-      >
+      <div v-else-if="error"
+        class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/20 p-6 text-center py-12">
         <p class="text-error mb-4">{{ error }}</p>
-        <button
-          @click="() => fetchBlogs()"
-          class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
-        >
+        <button @click="() => fetchBlogs()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">
           重试
         </button>
       </div>
 
       <!-- Blog List -->
       <Transition name="fade" mode="out-in">
-        <div
-          v-if="filteredPosts.length > 0"
-          key="blog-list"
-          class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/20 p-6"
-          :class="{ 'opacity-60 pointer-events-none': switchingCategory }"
-        >
-          <article
-            v-for="(post, index) in filteredPosts"
-            :key="post.id"
-            class="py-stack-lg group"
-            :class="
-              index < filteredPosts.length - 1
-                ? 'border-b border-outline-variant/30'
-                : ''
-            "
-          >
-            <router-link
-              :to="`/blog/${post.slug}`"
-              class="grid gap-gutter items-start"
-              :class="
-                post.coverImage
-                  ? 'grid-cols-1 md:grid-cols-[1fr_240px]'
-                  : 'grid-cols-1'
-              "
-            >
+        <div v-if="filteredPosts.length > 0" key="blog-list"
+          class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/20 p-6">
+          <article v-for="(post, index) in filteredPosts" :key="post.id" class="py-stack-lg group" :class="index < filteredPosts.length - 1
+              ? 'border-b border-outline-variant/30'
+              : ''
+            ">
+            <router-link :to="`/blog/${post.slug}`" class="grid gap-gutter items-start" :class="post.coverImage
+                ? 'grid-cols-1 md:grid-cols-[1fr_240px]'
+                : 'grid-cols-1'
+              ">
               <div class="order-2 md:order-1">
                 <h2
-                  class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors mb-2"
-                >
+                  class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors mb-2">
                   {{ post.title }}
                 </h2>
-                <time
-                  class="text-label-xs font-label-xs text-outline mb-3 block"
-                >
+                <time class="text-label-xs font-label-xs text-outline mb-3 block">
                   {{ formatDate(post.publishedAt) }} · 阅读时间
                   {{ post.readingTime }} 分钟
                 </time>
-                <p
-                  class="text-on-surface-variant line-clamp-2 mb-4 leading-relaxed"
-                >
+                <p class="text-on-surface-variant line-clamp-2 mb-4 leading-relaxed">
                   {{ post.excerpt }}
                 </p>
-                <div
-                  class="flex items-center gap-2 text-primary font-semibold text-label-xs"
-                >
+                <div class="flex items-center gap-2 text-primary font-semibold text-label-xs">
                   阅读全文
-                  <span class="material-symbols-outlined text-[16px]"
-                    >arrow_forward</span
-                  >
+                  <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                 </div>
               </div>
               <!-- 只有在有图片时才显示图片区域 -->
               <div v-if="post.coverImage" class="order-1 md:order-2">
-                <div
-                  class="w-full aspect-video rounded overflow-hidden bg-surface-container-highest"
-                >
-                  <img
-                    :src="post.coverImage"
-                    :alt="post.title"
-                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+                <div class="w-full aspect-video rounded overflow-hidden bg-surface-container-highest">
+                  <el-image :src="post.coverImage" :alt="post.title" fit="cover"
+                    :preview-src-list="[post.coverImage]" />
                 </div>
               </div>
             </router-link>
@@ -128,45 +82,28 @@
         </div>
 
         <!-- Empty State -->
-        <div
-          v-else
-          key="empty-state"
-          class="text-center py-12 text-on-surface-variant"
-        >
+        <div v-else key="empty-state" class="text-center py-12 text-on-surface-variant">
           暂无文章
         </div>
       </Transition>
 
       <!-- Pagination -->
-      <nav
-        v-if="totalPages > 1"
-        class="mt-stack-xl flex justify-center items-center gap-2"
-      >
-        <button
-          @click="goToPage(currentPage - 1)"
+      <nav v-if="totalPages > 1" class="mt-stack-xl flex justify-center items-center gap-2">
+        <button @click="goToPage(currentPage - 1)"
           class="w-10 h-10 flex items-center justify-center rounded border border-outline-variant text-outline hover:border-primary hover:text-primary transition-colors"
-          :disabled="currentPage === 1"
-        >
+          :disabled="currentPage === 1">
           <span class="material-symbols-outlined">chevron_left</span>
         </button>
-        <button
-          v-for="page in displayedPages"
-          :key="page"
-          @click="goToPage(page)"
-          class="w-10 h-10 flex items-center justify-center rounded transition-colors"
-          :class="
-            currentPage === page
+        <button v-for="page in displayedPages" :key="page" @click="goToPage(page)"
+          class="w-10 h-10 flex items-center justify-center rounded transition-colors" :class="currentPage === page
               ? 'bg-primary text-white font-bold'
               : 'border border-outline-variant text-on-surface hover:border-primary hover:text-primary'
-          "
-        >
+            ">
           {{ page }}
         </button>
-        <button
-          @click="goToPage(currentPage + 1)"
+        <button @click="goToPage(currentPage + 1)"
           class="w-10 h-10 flex items-center justify-center rounded border border-outline-variant text-outline hover:border-primary hover:text-primary transition-colors"
-          :disabled="currentPage === totalPages"
-        >
+          :disabled="currentPage === totalPages">
           <span class="material-symbols-outlined">chevron_right</span>
         </button>
       </nav>
@@ -282,6 +219,8 @@ const formatDate = (dateString: string) => {
     year: "numeric",
     month: "long",
     day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 };
 
