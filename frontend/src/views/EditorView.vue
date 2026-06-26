@@ -180,7 +180,7 @@ const editor = useEditor({
     }),
     Image.configure({
       HTMLAttributes: {
-        class: 'max-w-full rounded-lg lazyload',
+        class: 'max-w-full rounded-lg h-auto',
         loading: 'lazy',
         decoding: 'async',
       },

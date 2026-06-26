@@ -42,7 +42,7 @@
               class="flex-1 py-3 bg-error text-on-error font-body-md rounded-lg hover:bg-error/90 transition-all disabled:opacity-50"
               :disabled="loading"
             >
-              {{ loading ? '删除�?..' : (confirmText || '删除') }}
+              {{ loading ? '删除中..' : (confirmText || '删除') }}
             </button>
           </div>
         </div>

@@ -133,7 +133,7 @@
                 <button v-if="authStore.isAuthenticated" @click.stop="handleDelete" :disabled="isDeleting"
                   class="px-3 py-1.5 text-label-xs font-label-xs text-error border border-error/50 rounded-lg hover:bg-error/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1">
                   <span class="material-symbols-outlined text-[16px]">delete</span>
-                  <span>{{ isDeleting ? '删除�?..' : '删除' }}</span>
+                  <span>{{ isDeleting ? '删除中..' : '删除' }}</span>
                 </button>
               </div>
 
@@ -173,9 +173,8 @@
     </Teleport>
 
     <!-- Delete Confirm Dialog -->
-    <DeleteConfirm v-model:visible="showDeleteConfirm" title="删除确认" message="确定要删除这条日常分享吗�? sub-message="此操作不可恢�?
+    <DeleteConfirm v-model:visible="showDeleteConfirm" title="删除确认" message="确定要删除这条日常分享吗?" sub-message="此操作不可恢复"
       confirm-text="删除" :loading="isDeleting" @confirm="handleDeleteConfirm" @cancel="handleDeleteCancel" />
-
     <Footer />
   </div>
 </template>
