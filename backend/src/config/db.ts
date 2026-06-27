@@ -9,6 +9,10 @@ const pool = new Pool({
   database: process.env.DB_NAME,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
+  max: 20, // 最大连接数
+  min: 2, // 最小连接数
+  idleTimeoutMillis: 30000, // 空闲连接超时时间
+  connectionTimeoutMillis: 5000, // 连接超时时间
 });
 
 export const query = async (text: string, params?: any[]) => {

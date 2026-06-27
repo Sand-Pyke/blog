@@ -57,7 +57,8 @@ async function initDatabase() {
       for (const statement of statements) {
         await pool.query(statement);
       }
-    } catch (err) {
+    } catch (err: any) {
+      console.error('Database initialization error:', err.message);
       process.exit(1);
     }
   }
