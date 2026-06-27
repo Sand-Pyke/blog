@@ -66,11 +66,11 @@
           <div class="mt-3">
             <div class="flex items-center justify-between text-sm text-on-surface-variant mb-1">
               <span>熟练度</span>
-              <span>{{ skill.level * 10 }}%</span>
+              <span>{{ skill.level * 20 }}%</span>
             </div>
             <div class="h-2 bg-surface-container-high rounded-full overflow-hidden">
               <div class="h-full bg-primary rounded-full transition-all duration-500"
-                :style="{ width: `${skill.level * 10}%` }"></div>
+                :style="{ width: `${skill.level * 20}%` }"></div>
             </div>
           </div>
 
@@ -171,12 +171,12 @@
 
                 <div>
                   <label class="block font-label-xs text-primary font-bold uppercase tracking-wider mb-2">
-                    熟练度: {{ formData.level * 10 }}%
+                    熟练度: {{ formData.level * 20 }}%
                   </label>
-                  <input v-model.number="formData.level" type="range" min="1" max="10"
+                  <input v-model.number="formData.level" type="range" min="1" max="5"
                     class="w-full h-2 bg-surface-container-high rounded-full appearance-none cursor-pointer accent-primary" />
                   <div class="flex justify-between text-xs text-on-surface-variant mt-1">
-                    <span>10%</span>
+                    <span>20%</span>
                     <span>100%</span>
                   </div>
                 </div>
