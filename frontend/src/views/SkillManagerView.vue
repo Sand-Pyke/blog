@@ -196,7 +196,7 @@
                   </button>
                   <button type="submit" :disabled="isSaving"
                     class="flex-1 py-3 bg-primary text-on-primary font-body-md rounded-lg hover:bg-primary/90 transition-all disabled:opacity-50">
-                    {{ isSaving ? "保存�?.." : "保存" }}
+                    {{ isSaving ? "保存中..." : "保存" }}
                   </button>
                 </div>
               </form>
