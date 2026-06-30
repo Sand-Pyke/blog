@@ -1,7 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-surface-container-low to-surface font-body-md text-body-md">
-    <TopNavBar />
-
+  <div class="flex-1 bg-gradient-to-b from-surface-container-low to-surface font-body-md text-body-md">
     <main class="max-w-4xl mx-auto px-gutter py-stack-lg mt-stack-lg">
       <!-- Skills Grid -->
       <div class="grid grid-cols-1 gap-4 mt-stack-lg" :class="{ 'md:grid-cols-2': skills.length > 0 }">
@@ -214,7 +212,6 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch } from "vue";
-import TopNavBar from "../components/TopNavBar.vue";
 import DeleteConfirm from "../components/DeleteConfirm.vue";
 import { useScrollLock } from "@vueuse/core";
 

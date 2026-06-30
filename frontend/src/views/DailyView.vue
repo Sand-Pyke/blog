@@ -1,8 +1,6 @@
 <template>
   <div
-    class="font-body-md text-body-md selection:bg-primary-fixed selection:text-on-primary-fixed bg-gradient-to-b from-surface-container-low to-surface min-h-screen">
-    <TopNavBar />
-
+    class="font-body-md text-body-md selection:bg-primary-fixed selection:text-on-primary-fixed bg-gradient-to-b from-surface-container-low to-surface flex-1">
     <main class="pt-24 pb-stack-xl max-w-container-max mx-auto px-gutter md:px-0">
       <!-- Header Section -->
       <section class="mb-stack-xl">
@@ -58,8 +56,8 @@
 
               <!-- Image if available -->
               <div v-if="entry.images && entry.images.length > 0"
-                class="aspect-video w-full overflow-hidden rounded-lg mb-4">
-                <el-image :src="entry.images[0]" :alt="entry.content" fit="cover" :preview-src-list="entry.images" />
+                class="aspect-video w-full overflow-hidden rounded-lg mb-4 pointer-events-none">
+                <el-image :src="getFullImageUrl(entry.images[0] || '')" :alt="entry.content" fit="cover" />
               </div>
 
               <!-- Code snippet if available -->
@@ -69,10 +67,9 @@
               </div>
 
               <!-- Book cover if available -->
-              <div v-if="entry.bookCover" class="flex md:justify-end gap-2">
+              <div v-if="entry.bookCover" class="flex md:justify-end gap-2 pointer-events-none">
                 <div class="w-16 h-20 bg-outline-variant rounded shadow-sm overflow-hidden">
-                  <el-image :src="entry.bookCover" :alt="entry.content" fit="cover"
-                    :preview-src-list="[entry.bookCover]" />
+                  <el-image :src="getFullImageUrl(entry.bookCover)" :alt="entry.content" fit="cover" />
                 </div>
               </div>
             </div>
@@ -104,7 +101,7 @@
         <div v-if="showDialog" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
           @click.self="closeDialog">
           <div class="bg-surface-container-lowest rounded-2xl p-6"
-            :class="currentWidth === 'mobile' ? 'w-[90%]' : 'w-full max-w-[600px]'">
+            :class="currentWidth === 'mobile' ? 'w-[90%] max-h-[80vh]' : 'w-full max-w-[600px] max-h-[80vh]'">
             <div class="flex items-center justify-between mb-6">
               <h2 class="font-headline-md text-headline-md text-on-surface">
                 {{ selectedEntry.title || '日常分享详情' }}
@@ -115,7 +112,8 @@
               </button>
             </div>
 
-            <div v-if="selectedEntry" class="space-y-stack-md">
+            <div v-if="selectedEntry" class="space-y-stack-md overflow-y-auto max-h-[calc(80vh-80px)]"
+              @click="handleContentClick">
               <!-- Date and Tags -->
               <div class="flex items-center justify-between flex-wrap gap-2">
                 <div class="flex items-center gap-2">
@@ -148,9 +146,10 @@
 
               <!-- Images -->
               <div v-if="selectedEntry.images && selectedEntry.images.length > 0" class="space-y-2">
-                <el-image v-for="(image, imgIndex) in selectedEntry.images" :key="imgIndex" :src="image"
-                  :alt="`Image ${Number(imgIndex) + 1}`" fit="contain" class="w-full rounded-lg"
-                  :preview-src-list="selectedEntry.images" />
+                <el-image v-for="(image, imgIndex) in selectedEntry.images" :key="imgIndex"
+                  :src="getFullImageUrl(image)" :alt="`Image ${Number(imgIndex) + 1}`" fit="contain"
+                  class="w-full rounded-lg cursor-pointer"
+                  @click="openImagePreview(selectedEntry.images, Number(imgIndex))" />
               </div>
 
               <!-- Code Snippet -->
@@ -162,8 +161,8 @@
               <!-- Book Cover -->
               <div v-if="selectedEntry.bookCover" class="flex items-center gap-3">
                 <div class="w-16 h-20 bg-outline-variant rounded shadow-sm overflow-hidden">
-                  <el-image :src="selectedEntry.bookCover" :alt="selectedEntry.content" fit="cover"
-                    :preview-src-list="[selectedEntry.bookCover]" />
+                  <el-image :src="getFullImageUrl(selectedEntry.bookCover)" :alt="selectedEntry.content" fit="cover"
+                    class="cursor-pointer" @click="openImagePreview([selectedEntry.bookCover], 0)" />
                 </div>
               </div>
             </div>
@@ -172,18 +171,19 @@
       </transition>
     </Teleport>
 
+    <!-- Image Viewer -->
+    <el-image-viewer v-if="showImageViewer" :url-list="previewImageUrls" :initial-index="initialImageIndex"
+      :z-index="3000" teleported @close="closeImagePreview" />
+
     <!-- Delete Confirm Dialog -->
     <DeleteConfirm v-model:visible="showDeleteConfirm" title="删除确认" message="确定要删除这条日常分享吗?" sub-message="此操作不可恢复"
       confirm-text="删除" :loading="isDeleting" @confirm="handleDeleteConfirm" @cancel="handleDeleteCancel" />
-    <Footer />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { ElMessage } from 'element-plus';
-import TopNavBar from '../components/TopNavBar.vue';
-import Footer from '../components/Footer.vue';
 import DeleteConfirm from '../components/DeleteConfirm.vue';
 import { api } from '../services/api';
 import { useAuthStore } from '../stores/auth';
@@ -205,10 +205,61 @@ const showDialog = ref(false);
 const isDeleting = ref(false);
 const showDeleteConfirm = ref(false);
 
+const previewImageUrls = ref<string[]>([]);
+const showImageViewer = ref(false);
+const initialImageIndex = ref(0);
+
 const isLocked = useScrollLock(document.documentElement);
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 const availableTags = ref<string[]>([]);
+
+const getFullImageUrl = (url: string): string => {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  if (url.startsWith('/uploads/')) {
+    return url; 
+  }
+  return `${API_BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+};
+
+const handleContentClick = (event: MouseEvent) => {
+  const target = event.target as HTMLElement;
+  if (target.tagName === 'IMG') {
+    event.stopPropagation();
+    const src = target.getAttribute('src');
+    if (!src) return;
+    const container = target.closest('.prose') || target.parentElement;
+    if (container) {
+      const images = container.querySelectorAll('img');
+      const urls = Array.from(images).map(img => img.getAttribute('src')).filter(Boolean) as string[];
+      const index = urls.indexOf(src);
+      if (index !== -1) {
+        const fullUrls = urls.map(url => getFullImageUrl(url));
+        openImagePreview(fullUrls, index);
+      } else {
+        openImagePreview([getFullImageUrl(src)], 0);
+      }
+    } else {
+      openImagePreview([getFullImageUrl(src)], 0);
+    }
+  }
+};
+
+const openImagePreview = (urls: string[], index: number) => {
+  const validUrls = urls.filter(url => url && url.trim() !== '');
+  if (validUrls.length === 0) {
+    ElMessage.warning('没有可预览的图片');
+    return;
+  }
+  previewImageUrls.value = validUrls;
+  initialImageIndex.value = Math.min(index, validUrls.length - 1);
+  showImageViewer.value = true;
+};
+
+const closeImagePreview = () => {
+  showImageViewer.value = false;
+};
 
 watch(showDialog, (val) => {
   isLocked.value = val;
@@ -320,10 +371,7 @@ const handleDeleteConfirm = async () => {
 
   try {
     await api.deleteDaily(selectedEntry.value.id);
-
-    // 从列表中移除
     dailyEntries.value = dailyEntries.value.filter(e => e.id !== selectedEntry.value.id);
-
     ElMessage.success('删除成功');
     showDeleteConfirm.value = false;
     closeDialog();

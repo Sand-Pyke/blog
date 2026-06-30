@@ -4,12 +4,17 @@
 @tailwind utilities;
 
 html {
-  scrollbar-gutter: stable;
+  scrollbar-gutter: stable both-edges;
 }
 
 body {
   background-color: var(--color-background) !important;
   color: var(--color-on-background);
+  scrollbar-gutter: stable both-edges;
+}
+
+body.el-image-viewer--hidden {
+  overflow-y: auto !important;
 }
 
 /* Debug: Check if bg-background class is compiled */
@@ -97,27 +102,27 @@ html.dark {
   --el-bg-color: var(--color-surface-container);
   --el-bg-color-overlay: var(--color-surface-container-high);
   --el-bg-color-page: var(--color-background);
-  
+
   /* Text colors */
   --el-text-color-primary: var(--color-on-surface);
   --el-text-color-regular: var(--color-on-surface);
   --el-text-color-secondary: var(--color-on-surface-variant);
   --el-text-color-placeholder: var(--color-outline);
-  
+
   /* Border colors */
   --el-border-color: var(--color-outline-variant);
   --el-border-color-light: var(--color-outline-variant);
   --el-border-color-lighter: var(--color-outline-variant);
   --el-border-color-extra-light: var(--color-outline-variant);
   --el-border-color-dark: var(--color-outline);
-  
+
   /* Fill colors */
   --el-fill-color: var(--color-surface-container);
   --el-fill-color-light: var(--color-surface-container-high);
   --el-fill-color-lighter: var(--color-surface-container-high);
   --el-fill-color-blank: var(--color-surface-container);
   --el-fill-color-dark: var(--color-surface-container-high);
-  
+
   /* Input specific */
   --el-input-bg-color: var(--color-surface-container);
   --el-input-text-color: var(--color-on-surface);
@@ -125,16 +130,16 @@ html.dark {
   --el-input-hover-border-color: var(--color-primary);
   --el-input-focus-border-color: var(--color-primary);
   --el-input-placeholder-color: var(--color-outline);
-  
+
   /* Select specific */
   --el-select-bg-color: var(--color-surface-container);
   --el-select-input-focus-border-color: var(--color-primary);
-  
+
   /* Disabled state */
   --el-disabled-bg-color: var(--color-surface-container-high);
   --el-disabled-text-color: var(--color-on-surface-variant);
   --el-disabled-border-color: var(--color-outline-variant);
-  
+
   /* Overlay / dropdown */
   --el-popper-bg-color: var(--color-surface-container-high);
   --el-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -146,6 +151,10 @@ html.dark .el-select__wrapper {
   background-color: var(--color-surface-container) !important;
   border: 1px solid var(--color-outline-variant) !important;
   box-shadow: none !important;
+}
+
+.el-image-viewer__wrapper {
+  z-index: 100 !important;
 }
 
 html.dark .el-select__wrapper:hover {

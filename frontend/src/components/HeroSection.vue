@@ -24,6 +24,7 @@
         class="absolute inset-0 bg-primary-container rounded-full opacity-10 group-hover:scale-105 transition-transform duration-500">
       </div>
       <el-image :src="user.avatar" :alt="user.name" fit="cover" :preview-src-list="[user.avatar]"
+        :z-index="3000" preview-teleported
         class="w-full h-full rounded-full border-4 border-surface shadow-xl relative z-10" />
     </div>
   </section>

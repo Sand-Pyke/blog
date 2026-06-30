@@ -17,7 +17,6 @@ frontend/
 ├── src/
 │   ├── components/          # 公共组件
 │   │   ├── TopNavBar.vue   # 顶部导航栏
-│   │   ├── Footer.vue      # 页脚
 │   │   ├── ReadingProgress.vue  # 阅读进度条
 │   │   ├── SkillCard.vue   # 技能卡片
 │   │   ├── BlogPostCard.vue # 博客文章卡片

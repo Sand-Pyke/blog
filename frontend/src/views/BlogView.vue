@@ -1,7 +1,6 @@
 <template>
   <div
-    class="font-body-md text-body-md antialiased bg-gradient-to-b from-surface-container-low to-surface min-h-screen">
-    <TopNavBar />
+    class="font-body-md text-body-md antialiased bg-gradient-to-b from-surface-container-low to-surface flex-1">
 
     <main class="pt-24 pb-stack-xl max-w-container-max mx-auto px-gutter md:px-0">
       <!-- Page Header -->
@@ -74,7 +73,7 @@
               <div v-if="post.coverImage" class="order-1 md:order-2">
                 <div class="w-full aspect-video rounded overflow-hidden bg-surface-container-highest">
                   <el-image :src="post.coverImage" :alt="post.title" fit="cover"
-                    :preview-src-list="[post.coverImage]" />
+                    :preview-src-list="[post.coverImage]" :z-index="3000" preview-teleported />
                 </div>
               </div>
             </router-link>
@@ -108,15 +107,11 @@
         </button>
       </nav>
     </main>
-
-    <Footer />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from "vue";
-import TopNavBar from "../components/TopNavBar.vue";
-import Footer from "../components/Footer.vue";
 import { api } from "../services/api";
 import type { BlogPost } from "../types";
 

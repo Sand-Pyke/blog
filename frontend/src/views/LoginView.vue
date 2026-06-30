@@ -107,22 +107,8 @@
             </div>
           </div>
         </div>
-
-        <!-- Footer Links -->
-        <div class="mt-stack-md flex justify-center">
-          <a class="font-label-xs text-label-xs text-on-surface-variant hover:text-primary transition-colors" href="#">隐私政策</a>
-        </div>
       </div>
     </main>
-
-    <!-- Simple Footer -->
-    <footer class="w-full py-stack-md bg-transparent">
-      <div class="max-w-container-max mx-auto px-gutter text-center">
-        <p class="font-label-xs text-label-xs text-outline/60">
-          © 2026 DevLog. Built with precision.
-        </p>
-      </div>
-    </footer>
   </div>
 </template>
 

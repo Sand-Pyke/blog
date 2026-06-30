@@ -1,9 +1,7 @@
 <template>
   <div
-    class="font-body-md text-body-md antialiased overflow-x-hidden bg-gradient-to-b from-surface-container-low to-surface min-h-screen"
+    class="font-body-md text-body-md antialiased overflow-x-hidden bg-gradient-to-b from-surface-container-low to-surface flex-1"
   >
-    <TopNavBar />
-
     <main
       class="mt-24 max-w-container-max mx-auto px-gutter md:px-0 pb-stack-xl"
     >
@@ -280,15 +278,11 @@
         </div>
       </transition>
     </Teleport>
-
-    <Footer />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from "vue";
-import TopNavBar from "../components/TopNavBar.vue";
-import Footer from "../components/Footer.vue";
 import HeroSection from "../components/HeroSection.vue";
 import SkillCard from "../components/SkillCard.vue";
 import BlogPostCard from "../components/BlogPostCard.vue";

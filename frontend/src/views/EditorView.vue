@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-gradient-to-b from-surface-container-low to-surface text-on-background font-body-md text-body-md selection:bg-secondary-container selection:text-on-secondary-container min-h-screen relative">
+    class="bg-gradient-to-b from-surface-container-low to-surface text-on-background font-body-md text-body-md selection:bg-secondary-container selection:text-on-secondary-container flex-1 relative">
     <!-- Loading Overlay -->
     <div v-if="isPublishing || isUploadingImage"
       class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
@@ -15,7 +15,9 @@
       </div>
     </div>
 
-    <TopNavBar />
+    <!-- Image Preview -->
+    <el-image-viewer v-if="previewImageUrl" :url-list="[previewImageUrl]" :initial-index="0" @close="previewImageUrl = ''"
+      :z-index="3000" teleported />
 
     <main class="pt-16 pb-stack-xl max-w-[1400px] mx-auto px-gutter md:px-0">
       <!-- Editor Column -->
@@ -130,8 +132,6 @@
         </div>
       </section>
     </main>
-
-    <Footer />
   </div>
 </template>
 
@@ -146,8 +146,7 @@ import Image from '@tiptap/extension-image';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { common, createLowlight } from 'lowlight';
 import { useAuthStore } from '../stores/auth';
-import TopNavBar from '../components/TopNavBar.vue';
-import Footer from '../components/Footer.vue';
+import { ElImageViewer } from 'element-plus';
 
 const lowlight = createLowlight(common);
 
@@ -161,6 +160,7 @@ const errorMessage = ref('');
 const successMessage = ref('');
 const imageInput = ref<HTMLInputElement | null>(null);
 const isUploadingImage = ref(false);
+const previewImageUrl = ref('');
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -169,7 +169,8 @@ const editor = useEditor({
   content: '',
   extensions: [
     StarterKit.configure({
-      codeBlock: false, // 禁用默认�?code block，使�?lowlight 版本
+      codeBlock: false,
+      link: false,
     }),
     Placeholder.configure({
       placeholder: '开始你的创作.. 支持 Markdown 语法',
@@ -186,7 +187,7 @@ const editor = useEditor({
     }),
     Image.configure({
       HTMLAttributes: {
-        class: 'max-w-full rounded-lg h-auto',
+        class: 'max-w-[200px] rounded-lg h-auto cursor-zoom-in',
         loading: 'lazy',
         decoding: 'async',
       },
@@ -201,6 +202,52 @@ const editor = useEditor({
   editorProps: {
     attributes: {
       class: 'focus:outline-none min-h-[150px]',
+    },
+    handlePaste: (_view, event, _slice) => {
+      const items = (event.clipboardData || (event as any).originalEvent?.clipboardData)?.items;
+      if (!items) return false;
+
+      const imageFiles: File[] = [];
+      for (const item of items) {
+        if (item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          if (file) imageFiles.push(file);
+        }
+      }
+
+      if (imageFiles.length === 0) return false;
+
+      event.preventDefault();
+
+      imageFiles.forEach((file) => {
+        if (file) {
+          pasteImage(file);
+        }
+      });
+      return true;
+    },
+    handleDrop: (_view, event, _slice) => {
+      const files = event.dataTransfer?.files;
+      if (!files || files.length === 0) return false;
+
+      const imageFiles: File[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files.item(i);
+        if (file && file.type.startsWith('image/')) {
+          imageFiles.push(file);
+        }
+      }
+
+      if (imageFiles.length === 0) return false;
+
+      event.preventDefault();
+
+      imageFiles.forEach((file) => {
+        if (file) {
+          pasteImage(file);
+        }
+      });
+      return true;
     },
   },
 });
@@ -243,20 +290,13 @@ const triggerImageUpload = () => {
   imageInput.value?.click();
 };
 
-const handleImageUpload = async (event: Event) => {
-  const input = event.target as HTMLInputElement;
-  const file = input.files?.[0];
-
-  if (!file) return;
-
-  // Validate file type
+const pasteImage = async (file: File) => {
   if (!file.type.startsWith('image/')) {
     errorMessage.value = '请选择图片文件';
     setTimeout(() => errorMessage.value = '', 3000);
     return;
   }
 
-  // Validate file size (max 5MB)
   if (file.size > 5 * 1024 * 1024) {
     errorMessage.value = '图片大小不能超过 5MB';
     setTimeout(() => errorMessage.value = '', 3000);
@@ -271,11 +311,10 @@ const handleImageUpload = async (event: Event) => {
     const formData = new FormData();
     formData.append('image', file);
 
-    // 创建超时控制�?
     const timeoutController = new AbortController();
     const timeoutId = setTimeout(() => {
       timeoutController.abort();
-    }, 10000); // 10秒超�?
+    }, 10000);
 
     const response = await fetch(`${API_BASE_URL}/upload/image`, {
       method: 'POST',
@@ -294,7 +333,6 @@ const handleImageUpload = async (event: Event) => {
     }
 
     const data = await response.json();
-    // 使用返回的URL路径
     const imageUrl = data.url;
 
     if (imageUrl) {
@@ -303,7 +341,7 @@ const handleImageUpload = async (event: Event) => {
       setTimeout(() => successMessage.value = '', 2000);
     }
   } catch (error: any) {
-        if (error.name === 'AbortError') {
+    if (error.name === 'AbortError') {
       errorMessage.value = '上传超时，请重试';
     } else {
       errorMessage.value = error.message || '图片上传失败';
@@ -311,9 +349,17 @@ const handleImageUpload = async (event: Event) => {
     setTimeout(() => errorMessage.value = '', 3000);
   } finally {
     isUploadingImage.value = false;
-    // Clear input
-    input.value = '';
   }
+};
+
+const handleImageUpload = async (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+
+  if (!file) return;
+
+  await pasteImage(file);
+  input.value = '';
 };
 
 // Publish post
@@ -424,6 +470,28 @@ const publishPost = async () => {
 onBeforeUnmount(() => {
   editor.value?.destroy();
 });
+
+const handleImageClick = (event: Event) => {
+  const target = event.target as HTMLImageElement;
+  if (target.tagName === 'IMG') {
+    event.preventDefault();
+    previewImageUrl.value = target.src;
+  }
+};
+
+onMounted(() => {
+  const editorElement = document.querySelector('.prose');
+  if (editorElement) {
+    editorElement.addEventListener('click', handleImageClick);
+  }
+});
+
+onUnmounted(() => {
+  const editorElement = document.querySelector('.prose');
+  if (editorElement) {
+    editorElement.removeEventListener('click', handleImageClick);
+  }
+});
 </script>
 
 <style scoped>
@@ -501,9 +569,12 @@ onBeforeUnmount(() => {
 }
 
 .prose img {
-  max-width: 100%;
+  max-width: 200px !important;
+  max-height: 200px;
   border-radius: 0.5em;
   margin: 1em 0;
+  cursor: zoom-in;
+  object-fit: contain;
 }
 
 .prose hr {

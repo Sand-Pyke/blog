@@ -1,8 +1,10 @@
 <template>
   <div
-    class="text-on-surface font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed min-h-screen"
+    class="text-on-surface font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed flex-1"
   >
-    <TopNavBar />
+    <!-- Image Preview -->
+    <el-image-viewer v-if="previewImageUrl" :url-list="[previewImageUrl]" :initial-index="0" @close="previewImageUrl = ''"
+      :z-index="3000" teleported />
 
     <!-- Loading State -->
     <main
@@ -92,7 +94,8 @@
           <div
             class="relative w-full aspect-video rounded-xl overflow-hidden shadow-sm border border-outline-variant/20"
           >
-            <el-image :src="post.coverImage" :alt="post.title" fit="cover" :preview-src-list="[post.coverImage]" />
+            <el-image :src="post.coverImage" :alt="post.title" fit="cover" :preview-src-list="[post.coverImage]"
+              :z-index="3000" preview-teleported />
           </div>
           <figcaption
             class="mt-stack-sm text-center text-on-surface-variant font-label-xs italic opacity-70"
@@ -104,7 +107,7 @@
         <article
           class="prose prose-slate max-w-none prose-headings:font-headline-md prose-headings:text-on-surface prose-p:text-on-surface-variant prose-p:font-body-lg prose-p:leading-relaxed space-y-stack-md"
         >
-          <div v-html="post.content"></div>
+          <div v-html="post.content" @click="handleContentImageClick"></div>
         </article>
       </div>
       <!-- End Article Card -->
@@ -151,8 +154,6 @@
       @confirm="handleDeleteConfirm"
       @cancel="handleDeleteCancel"
     />
-
-    <Footer />
   </div>
 </template>
 
@@ -160,8 +161,7 @@
 import { ref, onMounted, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
-import TopNavBar from "../components/TopNavBar.vue";
-import Footer from "../components/Footer.vue";
+import { ElImageViewer } from 'element-plus';
 import DeleteConfirm from "../components/DeleteConfirm.vue";
 import { api } from "../services/api";
 import { useAuthStore } from "../stores/auth";
@@ -177,6 +177,7 @@ const error = ref("");
 
 const isDeleting = ref(false);
 const showDeleteConfirm = ref(false);
+const previewImageUrl = ref('');
 const isLocked = useScrollLock(document.documentElement);
 
 watch(showDeleteConfirm, (val) => {
@@ -315,6 +316,14 @@ const formatDate = (dateString: string) => {
     hour: "2-digit",
     minute: "2-digit",
   });
+};
+
+const handleContentImageClick = (event: Event) => {
+  const target = event.target as HTMLImageElement;
+  if (target.tagName === 'IMG') {
+    event.preventDefault();
+    previewImageUrl.value = target.src;
+  }
 };
 
 watch(
